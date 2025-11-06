@@ -1,0 +1,9 @@
+*.ipch
+*.pch
+*.obj
+*.pdb
+*.iobj
+*.ipdb
+*.iuser
+.vs/
+*.vsidx
