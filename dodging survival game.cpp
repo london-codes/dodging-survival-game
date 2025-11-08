@@ -5,6 +5,8 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include <array>
+#include <cmath>
+
 
 class PlayerShip
 {
@@ -17,19 +19,22 @@ class PlayerShip
         ship.setPoint(2, { 25.f, 30.f });
         ship.setPoint(3, { -25.f, 30.f });
         ship.setPosition(location);
+        ship.setRotation(sf::degrees(0));
     }
 
-    void moveUp() { ship.move({ 0.f, -1.f }); }
-    void moveLeft() { ship.move({ -1.f, 0.f }); }
-    void moveDown() { ship.move({ 0.f, 1.f }); }
-    void moveRight() { ship.move({ 1.f, 0.f }); }
+    void moveUp() { 
+        float xVelocity = std::cos((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
+        float yVelocity = std::sin((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
+        ship.move({ speed * xVelocity, speed * yVelocity });
+    }
+    void rotateRight() { ship.rotate(sf::degrees(-1)); }
+    void rotateLeft() { ship.rotate(sf::degrees(1)); }
+
 
     void update(float moving)
     {
-
         // well I know I want the ship to continue moving desppite no key being pressed
     }
-
 
     sf::Vector2f getLocation()
     {
@@ -37,25 +42,18 @@ class PlayerShip
         return location;
     }
 
-
-    
     void draw(sf::RenderWindow& window)
     {
         window.draw(ship);
     }
 
-
     private:
         sf::ConvexShape ship;
         sf::Vector2f location{800.f,450.f};
         int health { 100 };
-
-		float speedMultiplier{ 300.f };
+		float speed{ 3.f };
 
 };
-
-
-
 
 int main()
 {
@@ -78,12 +76,15 @@ int main()
 
         }
         
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)){player.moveUp();}
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)){player.moveLeft();}
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)){player.moveDown();}
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)){player.moveRight();}
-
-
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)){ player.moveUp();}
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
+        {
+            player.rotateRight();
+        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::E)) 
+        {
+            player.rotateLeft();
+        }
 
         window.clear();
         player.draw(window);
