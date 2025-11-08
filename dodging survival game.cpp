@@ -6,22 +6,60 @@
 #include <iostream>
 #include <array>
 
+class PlayerShip
+{
+    public:
+    PlayerShip()
+    {
+        ship.setPointCount(4);
+        ship.setPoint(0, { -15.f, -30.f });
+        ship.setPoint(1, { 15.f, -30.f });
+        ship.setPoint(2, { 25.f, 30.f });
+        ship.setPoint(3, { -25.f, 30.f });
+        ship.setPosition(sf::Vector2f {800, 450});
+    }
+
+    sf::ConvexShape& getShipDraw()
+    {
+        return ship;
+    }
+   
+
+    private:
+        sf::ConvexShape ship;
+        int health { 100 };
+
+};
+
+
+
+
 int main()
 {
-    auto window = sf::RenderWindow(sf::VideoMode({ 1920u, 1080u }), "Spcae dodger");
+    auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
     window.setFramerateLimit(144);
+
+    PlayerShip playerShip{};
+
 
     while (window.isOpen())
     {
+        
         while (const std::optional event = window.pollEvent())
         {
             if (event->is<sf::Event::Closed>())
             {
                 window.close();
             }
+
+
         }
 
         window.clear();
+
+
+        window.draw(playerShip.getShipDraw());
+
         window.display();
     }
 }
