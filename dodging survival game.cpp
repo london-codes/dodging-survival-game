@@ -16,18 +16,41 @@ class PlayerShip
         ship.setPoint(1, { 15.f, -30.f });
         ship.setPoint(2, { 25.f, 30.f });
         ship.setPoint(3, { -25.f, 30.f });
-        ship.setPosition(sf::Vector2f {800, 450});
+        ship.setPosition(location);
     }
 
-    sf::ConvexShape& getShipDraw()
+    void moveUp() { ship.move({ 0.f, -1.f }); }
+    void moveLeft() { ship.move({ -1.f, 0.f }); }
+    void moveDown() { ship.move({ 0.f, 1.f }); }
+    void moveRight() { ship.move({ 1.f, 0.f }); }
+
+    void update(float moving)
     {
-        return ship;
+
+        // well I know I want the ship to continue moving desppite no key being pressed
     }
-   
+
+
+    sf::Vector2f getLocation()
+    {
+        // maybe need idk
+        return location;
+    }
+
+
+    
+    void draw(sf::RenderWindow& window)
+    {
+        window.draw(ship);
+    }
+
 
     private:
         sf::ConvexShape ship;
+        sf::Vector2f location{800.f,450.f};
         int health { 100 };
+
+		float speedMultiplier{ 300.f };
 
 };
 
@@ -39,7 +62,7 @@ int main()
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
     window.setFramerateLimit(144);
 
-    PlayerShip playerShip{};
+    PlayerShip player{};
 
 
     while (window.isOpen())
@@ -54,12 +77,16 @@ int main()
 
 
         }
+        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)){player.moveUp();}
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)){player.moveLeft();}
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::S)){player.moveDown();}
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)){player.moveRight();}
+
+
 
         window.clear();
-
-
-        window.draw(playerShip.getShipDraw());
-
+        player.draw(window);
         window.display();
     }
 }
