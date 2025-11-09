@@ -21,14 +21,18 @@ class PlayerShip
         ship.setPosition(location);
         ship.setRotation(sf::degrees(0));
     }
+    // moves the ship faster and faster based on the timing of the w key but also when no being pressed has its own timer that starts to declerate the speed
+    // towards zero
+    void moveUp(float acceleration) { 
 
-    void moveUp() { 
-        float xVelocity = std::cos((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
-        float yVelocity = std::sin((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
-        ship.move({ speed * xVelocity, speed * yVelocity });
+        float xDirection = std::cos((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
+        float yDirection = std::sin((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
+
+        ship.move({ acceleration * xDirection, acceleration * yDirection });
+
     }
-    void rotateRight() { ship.rotate(sf::degrees(-1)); }
-    void rotateLeft() { ship.rotate(sf::degrees(1)); }
+    void rotateRight() { ship.rotate(sf::degrees(-2)); }
+    void rotateLeft() { ship.rotate(sf::degrees(2)); }
 
 
     void update(float moving)
@@ -62,6 +66,7 @@ int main()
 
     PlayerShip player{};
 
+    sf::Clock clock;
 
     while (window.isOpen())
     {
@@ -75,8 +80,20 @@ int main()
 
 
         }
-        
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)){ player.moveUp();}
+        // time here that counts how long your pressing w key and pushes the ship in that direction acclerating style
+        // Im pretty sure you just implement sf::time with phyrics forumula for calcualting velcotiy based on itme
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
+        { 
+            clock.start();
+            player.moveUp(clock.getElapsedTime().asSeconds());
+            
+        }
+        else
+        {
+            clock.restart();
+        }
+
+
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::Q))
         {
             player.rotateRight();
