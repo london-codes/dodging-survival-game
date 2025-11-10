@@ -7,27 +7,42 @@
 #include <array>
 #include <cmath>
 
+// Make into HEADER at some point
+//constant pi
+
 // seperate file for it as some point
 class PlayerShip
 {
 public:
     PlayerShip()
-        : texture("assets/player.png"), ship(texture)
+        : texture("assets/player.png"), shipVisual(texture)
     {
-        sf::Vector2f scale{ 2.f, 2.f }; // use to scale size up down
-        ship.setScale(scale);
-        ship.setPosition({ 800.f,450.f });
+        shipHitBox.setPointCount(8);
+        // roughly hitbox for now I'll adjust when I have something to test collsiosn with // could use all positive values and just corretly set orgin after
+        shipHitBox.setPoint(0, sf::Vector2f{-10, -20 });
+        shipHitBox.setPoint(1, sf::Vector2f{10, -20 });
+        shipHitBox.setPoint(2, sf::Vector2f{10, 10 });
+        shipHitBox.setPoint(3, sf::Vector2f{15, 10 });
+        shipHitBox.setPoint(4, sf::Vector2f{15, 20 });
+        shipHitBox.setPoint(5, sf::Vector2f{-15, 20 });
+        shipHitBox.setPoint(6, sf::Vector2f{-15, 10 });
+        shipHitBox.setPoint(7, sf::Vector2f{-10, 10 });
+        shipHitBox.setPosition({ 800.f,450.f });
+
+        // need to fix origin of sprite so rotation looks normal
+        shipVisual.setScale(sf::Vector2f {2.f, 2.f});
+        shipVisual.setPosition({ 800.f,450.f });
     }
 
-    void rotateRight() { ship.rotate(sf::degrees(-1.5)); }
-    void rotateLeft() { ship.rotate(sf::degrees(1.5)); }
+    void rotateRight() { shipVisual.rotate(-rotationRate); shipHitBox.rotate(-rotationRate); }
+    void rotateLeft() { shipVisual.rotate(rotationRate); shipHitBox.rotate(rotationRate); }
 
 
     // based of input from w key the thrust is added to the velocity of the ship
     void forwardThrust(float time)
     {
-        float xDirection = std::cos((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
-        float yDirection = std::sin((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
+        float xDirection = std::cos((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
+        float yDirection = std::sin((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
         acceleration = { speed * time * xDirection, speed * time * yDirection };
         velocity = velocity + acceleration;
         acceleration = { 0, 0 };
@@ -36,19 +51,24 @@ public:
     // simply updates the position of the ship every frame based on the ships current velocity which is stored in private
     void update()
     {
-        ship.move(velocity);
+        shipVisual.move(velocity);
+        shipHitBox.move(velocity);
     }
 
     void draw(sf::RenderWindow& window)
     {
-        window.draw(ship);
+        // by the way draw the hit box at some point to make sure it matches texture use transparency
+        window.draw(shipVisual);
     }
 
 private:
     sf::Texture texture;
-    sf::Sprite ship; // general ship infomraiton like shape, orietnation, rotation, also includes move commands 
+    sf::Sprite shipVisual; // use for visual and animating stuff. Also use for shadows potentially
+    // At some point add second shipVisualRocket for thruster animation spereately
+    sf::ConvexShape shipHitBox; // use this for collsions and phyrics and what not
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
+    sf::Angle rotationRate{ sf::degrees(1.5f) };
     int health{ 100 };
     float speed{ 2.f };
 };
@@ -101,7 +121,7 @@ int main()
         player.update();
 
         // render
-        window.clear();
+        window.clear(sf::Color(25, 25, 112));
         player.draw(window);
         window.display();
     }
