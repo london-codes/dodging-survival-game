@@ -12,18 +12,11 @@ class PlayerShip
 {
 public:
     PlayerShip()
+        : texture("assets/player.png"), ship(texture)
     {
-        ship.setPointCount(4);
-        ship.setPoint(0, { -15.f, -30.f });
-        ship.setPoint(1, { 15.f, -30.f });
-        ship.setPoint(2, { 25.f, 30.f });
-        ship.setPoint(3, { -25.f, 30.f });
+        sf::Vector2f scale{ 2.f, 2.f }; // use to scale size up down
+        ship.setScale(scale);
         ship.setPosition({ 800.f,450.f });
-        ship.setRotation(sf::degrees(0));
-
-        texture.loadFromFile("assets/player.png");
-        ship.setTexture(&texture);
-
     }
 
     void rotateRight() { ship.rotate(sf::degrees(-1.5)); }
@@ -52,12 +45,12 @@ public:
     }
 
 private:
-    sf::ConvexShape ship; // general ship infomraiton like shape, orietnation, rotation, also includes move commands 
+    sf::Texture texture;
+    sf::Sprite ship; // general ship infomraiton like shape, orietnation, rotation, also includes move commands 
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     int health{ 100 };
     float speed{ 2.f };
-    sf::Texture texture;
 };
 
 int main()
@@ -65,7 +58,7 @@ int main()
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
     window.setFramerateLimit(144);
 
-    PlayerShip player{};
+    PlayerShip player;
 
     sf::Clock clock;
 
