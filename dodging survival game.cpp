@@ -17,6 +17,8 @@ public:
     PlayerShip()
         : texture("assets/player.png"), shipVisual(texture)
     {
+        // For Both the HitBox and Visual I the origin of rotaiton might need to be adjusted so that it matches how it moves better.
+
         shipHitBox.setPointCount(8);
         // roughly hitbox for now I'll adjust when I have something to test collsiosn with // could use all positive values and just corretly set orgin after
         shipHitBox.setPoint(0, sf::Vector2f{-10, -20 });
@@ -30,8 +32,9 @@ public:
         shipHitBox.setPosition({ 800.f,450.f });
 
         // need to fix origin of sprite so rotation looks normal
-        shipVisual.setScale(sf::Vector2f {2.f, 2.f});
+        shipVisual.setScale({3.f, 3.f});
         shipVisual.setPosition({ 800.f,450.f });
+        shipVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 });
     }
 
     void rotateRight() { shipVisual.rotate(-rotationRate); shipHitBox.rotate(-rotationRate); }
@@ -59,6 +62,7 @@ public:
     {
         // by the way draw the hit box at some point to make sure it matches texture use transparency
         window.draw(shipVisual);
+        window.draw(shipHitBox); // remove this at some point
     }
 
 private:
