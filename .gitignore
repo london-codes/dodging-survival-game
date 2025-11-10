@@ -9,5 +9,6 @@ Release/
 *.iobj
 *.ipdb
 *.iuser
+*.user
 .vs/
 *.vsidx
