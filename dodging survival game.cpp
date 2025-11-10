@@ -15,10 +15,11 @@ class PlayerShip
 {
 public:
     PlayerShip()
-        : texture("assets/player.png"), shipVisual(texture)
+        : shipTexture("assets/playership.png"), shipVisual(shipTexture), rocketFlameTexture("assets/flame.png"), rocketFlameVisual(rocketFlameTexture)
     {
-        // For Both the HitBox and Visual I the origin of rotaiton might need to be adjusted so that it matches how it moves better.
+        // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
 
+        // HitBox
         shipHitBox.setPointCount(8);
         // roughly hitbox for now I'll adjust when I have something to test collsiosn with // could use all positive values and just corretly set orgin after
         shipHitBox.setPoint(0, sf::Vector2f{-10, -20 });
@@ -31,19 +32,27 @@ public:
         shipHitBox.setPoint(7, sf::Vector2f{-10, 10 });
         shipHitBox.setPosition({ 800.f,450.f });
 
-        // need to fix origin of sprite so rotation looks normal
-        shipVisual.setScale({3.f, 3.f});
+        //Ship visuals
+        shipVisual.setScale({1.f, 1.f});
         shipVisual.setPosition({ 800.f,450.f });
         shipVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 });
+        // Thruster Visual
+        
+        // want same origin as ship, but push it back in terms of pixles so it rotates correctly.
+        rocketFlameVisual.setPosition({ 800.f,450.f });
+        rocketFlameVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 }); 
+        
     }
 
-    void rotateRight() { shipVisual.rotate(-rotationRate); shipHitBox.rotate(-rotationRate); }
-    void rotateLeft() { shipVisual.rotate(rotationRate); shipHitBox.rotate(rotationRate); }
+    void rotateRight() { shipVisual.rotate(-rotationRate); shipHitBox.rotate(-rotationRate); rocketFlameVisual.rotate(-rotationRate);  }
+    void rotateLeft() { shipVisual.rotate(rotationRate); shipHitBox.rotate(rotationRate); rocketFlameVisual.rotate(rotationRate);
+    }
 
 
     // based of input from w key the thrust is added to the velocity of the ship
-    void forwardThrust(float time)
+    void forwardPropulsion(float time)
     {
+        // add in somewhere so that the rocketFlame animation is called
         float xDirection = std::cos((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
         float yDirection = std::sin((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
         acceleration = { speed * time * xDirection, speed * time * yDirection };
@@ -54,21 +63,25 @@ public:
     // simply updates the position of the ship every frame based on the ships current velocity which is stored in private
     void update()
     {
-        shipVisual.move(velocity);
         shipHitBox.move(velocity);
+        shipVisual.move(velocity);
+        rocketFlameVisual.move(velocity);
     }
 
     void draw(sf::RenderWindow& window)
     {
         // by the way draw the hit box at some point to make sure it matches texture use transparency
         window.draw(shipVisual);
-        window.draw(shipHitBox); // remove this at some point
+        window.draw(rocketFlameVisual);
     }
 
 private:
-    sf::Texture texture;
+    sf::Texture shipTexture;
     sf::Sprite shipVisual; // use for visual and animating stuff. Also use for shadows potentially
-    // At some point add second shipVisualRocket for thruster animation spereately
+
+    sf::Texture rocketFlameTexture;
+    sf::Sprite rocketFlameVisual; // for visual animation of thruster
+
     sf::ConvexShape shipHitBox; // use this for collsions and phyrics and what not
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
@@ -106,7 +119,7 @@ int main()
         // inputs
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         {
-            player.forwardThrust(dt);
+            player.forwardPropulsion(dt);
         }
 
 
