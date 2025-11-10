@@ -7,7 +7,7 @@
 #include <array>
 #include <cmath>
 
-
+// seperate file for it as some point
 class PlayerShip
 {
 public:
@@ -20,16 +20,17 @@ public:
         ship.setPoint(3, { -25.f, 30.f });
         ship.setPosition({ 800.f,450.f });
         ship.setRotation(sf::degrees(0));
+
+        texture.loadFromFile("assets/player.png");
+        ship.setTexture(&texture);
+
     }
-    // moves the ship faster and faster based on the timing of the w key but also when no being pressed has its own timer that starts to declerate the speed
-    // towards zero
 
-    void rotateRight() { ship.rotate(sf::degrees(-2)); }
-    void rotateLeft() { ship.rotate(sf::degrees(2)); }
+    void rotateRight() { ship.rotate(sf::degrees(-1.5)); }
+    void rotateLeft() { ship.rotate(sf::degrees(1.5)); }
 
-    // calc accelreation which really is just a velocity and add it to the current velocity
 
-    // this funciton will beused to change the momentum / vleocity of the ship
+    // based of input from w key the thrust is added to the velocity of the ship
     void forwardThrust(float time)
     {
         float xDirection = std::cos((ship.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
@@ -52,11 +53,11 @@ public:
 
 private:
     sf::ConvexShape ship; // general ship infomraiton like shape, orietnation, rotation, also includes move commands 
-    sf::Vector2f velocity; // used to simply apply update to so that there is mommentum and stuff keeps moving if your not thrustinmg your dick in my butt
+    sf::Vector2f velocity;
     sf::Vector2f acceleration;
     int health{ 100 };
-    float speed{ 3.f };
-
+    float speed{ 2.f };
+    sf::Texture texture;
 };
 
 int main()
@@ -68,8 +69,6 @@ int main()
 
     sf::Clock clock;
 
-    int frame = 0;
-    float total = 0;
 
     while (window.isOpen())
     {
@@ -83,6 +82,7 @@ int main()
 
 
         }
+
         // time mechanics
         float dt = clock.restart().asSeconds();
 

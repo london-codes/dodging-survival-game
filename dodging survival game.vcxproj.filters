@@ -13,10 +13,21 @@
       <UniqueIdentifier>{67DA6AB6-F800-4c08-8B7A-83BB121AAD01}</UniqueIdentifier>
       <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tiff;tif;png;wav;mfcribbon-ms</Extensions>
     </Filter>
+    <Filter Include="assests">
+      <UniqueIdentifier>{bbb0a110-ae7b-40c7-ae8b-60f24d887d81}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="dodging survival game.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Users\londo\Downloads\player.png">
+      <Filter>assests</Filter>
+    </Image>
+    <Image Include="..\..\Users\londo\Downloads\pixil-frame-0.png">
+      <Filter>assests</Filter>
+    </Image>
   </ItemGroup>
 </Project>

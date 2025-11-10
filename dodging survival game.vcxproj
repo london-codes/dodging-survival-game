@@ -138,6 +138,15 @@
   <ItemGroup>
     <ClCompile Include="dodging survival game.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <Image Include="..\..\Users\londo\Downloads\pixil-frame-0.png">
+      <DeploymentContent>false</DeploymentContent>
+    </Image>
+    <Image Include="..\..\Users\londo\Downloads\player.png">
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</DeploymentContent>
+      <DeploymentContent Condition="'$(Configuration)|$(Platform)'=='Release|x64'">true</DeploymentContent>
+    </Image>
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
