@@ -36,17 +36,15 @@ public:
         shipVisual.setScale({1.f, 1.f});
         shipVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 });
         shipVisual.setPosition({ 800.f,450.f });
-        std::cout << shipVisual.getLocalBounds().size.y;
 
         // Thruster Visual
         rocketFlameVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, -shipVisual.getLocalBounds().size.y / 2 });
         rocketFlameVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
-        std::cout << shipVisual.getLocalBounds().size.y;
+  
     }
 
-    void rotateRight() { shipVisual.rotate(-rotationRate); shipHitBox.rotate(-rotationRate); rocketFlameVisual.rotate(-rotationRate);  }
-    void rotateLeft() { shipVisual.rotate(rotationRate); shipHitBox.rotate(rotationRate); rocketFlameVisual.rotate(rotationRate);
-    }
+    void rotateRight(float dt) { shipVisual.rotate(-rotationRate * dt); shipHitBox.rotate(-rotationRate * dt); rocketFlameVisual.rotate(-rotationRate * dt);  }
+    void rotateLeft(float dt) { shipVisual.rotate(rotationRate * dt); shipHitBox.rotate(rotationRate * dt); rocketFlameVisual.rotate(rotationRate * dt);    }
 
 
     // based of input from w key the thrust is added to the velocity of the ship
@@ -56,23 +54,29 @@ public:
         float xDirection = std::cos((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
         float yDirection = std::sin((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
         acceleration = { speed * time * xDirection, speed * time * yDirection };
-        velocity = velocity + acceleration;
+        velocity = (velocity + acceleration);
         acceleration = { 0, 0 };
+        rocketFlameVisualToggle = true;
     }
 
     // simply updates the position of the ship every frame based on the ships current velocity which is stored in private
-    void update()
+    void update(float dt)
     {
-        shipHitBox.move(velocity);
-        shipVisual.move(velocity);
-        rocketFlameVisual.move(velocity);
+        shipHitBox.move(velocity * dt);
+        shipVisual.move(velocity * dt);
+        rocketFlameVisual.move(velocity * dt);
     }
 
     void draw(sf::RenderWindow& window)
     {
         // by the way draw the hit box at some point to make sure it matches texture use transparency
         window.draw(shipVisual);
-        window.draw(rocketFlameVisual);
+        if (rocketFlameVisualToggle)
+        {
+            window.draw(rocketFlameVisual);
+            rocketFlameVisualToggle = false;
+        }
+        
     }
 
 private:
@@ -81,19 +85,20 @@ private:
 
     sf::Texture rocketFlameTexture;
     sf::Sprite rocketFlameVisual; // for visual animation of thruster
+    bool rocketFlameVisualToggle{ false };
 
     sf::ConvexShape shipHitBox; // use this for collsions and phyrics and what not
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
-    sf::Angle rotationRate{ sf::degrees(1.5f) };
+    sf::Angle rotationRate{ sf::degrees(270.f) };
     int health{ 100 };
-    float speed{ 2.f };
+    float speed{ 300.f };
 };
 
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
-    window.setFramerateLimit(144);
+    window.setFramerateLimit(240);
 
     PlayerShip player;
 
@@ -125,17 +130,17 @@ int main()
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         {
-            player.rotateRight();
+            player.rotateRight(dt);
         }
 
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         {
-            player.rotateLeft();
+            player.rotateLeft(dt);
         }
 
         // updates
-        player.update();
+        player.update(dt);
 
         // render
         window.clear(sf::Color(25, 25, 112));
