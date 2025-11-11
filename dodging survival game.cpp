@@ -34,14 +34,14 @@ public:
 
         //Ship visuals
         shipVisual.setScale({1.f, 1.f});
-        shipVisual.setPosition({ 800.f,450.f });
         shipVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 });
+        shipVisual.setPosition({ 800.f,450.f });
+        std::cout << shipVisual.getLocalBounds().size.y;
+
         // Thruster Visual
-        
-        // want same origin as ship, but push it back in terms of pixles so it rotates correctly.
-        rocketFlameVisual.setPosition({ 800.f,450.f });
-        rocketFlameVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 }); 
-        
+        rocketFlameVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, -shipVisual.getLocalBounds().size.y / 2 });
+        rocketFlameVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
+        std::cout << shipVisual.getLocalBounds().size.y;
     }
 
     void rotateRight() { shipVisual.rotate(-rotationRate); shipHitBox.rotate(-rotationRate); rocketFlameVisual.rotate(-rotationRate);  }
