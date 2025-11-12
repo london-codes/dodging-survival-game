@@ -15,7 +15,9 @@ class PlayerShip
 {
 public:
     PlayerShip()
-        : shipTexture("assets/playership.png"), shipVisual(shipTexture), rocketFlameTexture("assets/flame2.png"), rocketFlameVisual(rocketFlameTexture)
+        : shipTexture("assets/playership.png"), shipVisual(shipTexture), 
+        exhaustTexture("assets/flame2.png"), exhaustVisual(exhaustTexture) // right now I need this intiated with dummy so that origin and position can be set
+        // correctly. Maybe find a way so I don't have to intiate this with just one of the flame.png's
     {
         // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
 
@@ -38,17 +40,17 @@ public:
         shipVisual.setPosition({ 800.f,450.f });
 
         // Thruster Visual
-        rocketFlameAnimation[0].loadFromFile("assets/flame1.png");
-        rocketFlameAnimation[1].loadFromFile("assets/flame2.png");
-        rocketFlameAnimation[2].loadFromFile("assets/flame3.png");
-        rocketFlameAnimation[3].loadFromFile("assets/flame4.png");
-        rocketFlameVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, -shipVisual.getLocalBounds().size.y / 2 });
-        rocketFlameVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
+        exahustAnimation[0].loadFromFile("assets/flame1.png");
+        exahustAnimation[1].loadFromFile("assets/flame2.png");
+        exahustAnimation[2].loadFromFile("assets/flame3.png");
+        exahustAnimation[3].loadFromFile("assets/flame4.png");
+        exhaustVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, -shipVisual.getLocalBounds().size.y / 2 });
+        exhaustVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
   
     }
 
-    void rotateRight(float dt) { shipVisual.rotate(-rotationRate * dt); shipHitBox.rotate(-rotationRate * dt); rocketFlameVisual.rotate(-rotationRate * dt);  }
-    void rotateLeft(float dt) { shipVisual.rotate(rotationRate * dt); shipHitBox.rotate(rotationRate * dt); rocketFlameVisual.rotate(rotationRate * dt);    }
+    void rotateRight(float dt) { shipVisual.rotate(-rotationRate * dt); shipHitBox.rotate(-rotationRate * dt); exhaustVisual.rotate(-rotationRate * dt);  }
+    void rotateLeft(float dt) { shipVisual.rotate(rotationRate * dt); shipHitBox.rotate(rotationRate * dt); exhaustVisual.rotate(rotationRate * dt);    }
 
 
     // based of input from w key the thrust is added to the velocity of the ship
@@ -61,7 +63,7 @@ public:
         velocity = (velocity + acceleration);
 
         thrustActived = true;
-        exahustDuration += dt;
+        exhaustDuration += dt;
     }
 
     // simply updates Everything about the ship to get ready for rendering
@@ -70,28 +72,28 @@ public:
         // Moving all parts of the ship correctly.
         shipHitBox.move(velocity * dt);
         shipVisual.move(velocity * dt);
-        rocketFlameVisual.move(velocity * dt);
+        exhaustVisual.move(velocity * dt);
 
         // Logic for smooth animation of rocket Exahust.
-        if (exahustDuration > 0)
+        if (exhaustDuration > 0)
         {
-            if (exahustDuration < 0.07f)
-                rocketFlameVisual.setTexture(rocketFlameAnimation[0]);
-            else if (exahustDuration < 0.15f)
-                rocketFlameVisual.setTexture(rocketFlameAnimation[1]);
-            else if (exahustDuration < 0.25f)
-                rocketFlameVisual.setTexture(rocketFlameAnimation[2]);
+            if (exhaustDuration < 0.07f)
+                exhaustVisual.setTexture(exahustAnimation[0]);
+            else if (exhaustDuration < 0.15f)
+                exhaustVisual.setTexture(exahustAnimation[1]);
+            else if (exhaustDuration < 0.25f)
+                exhaustVisual.setTexture(exahustAnimation[2]);
             else
             {
-                rocketFlameVisual.setTexture(rocketFlameAnimation[3]);
-                exahustDuration = 0.26f; // cap it at max flame
+                exhaustVisual.setTexture(exahustAnimation[3]);
+                exhaustDuration = 0.24f; // cap it at max flame
             }
-            if (not thrustActived)
-            {
-                exahustDuration -= dt;
-                if (exahustDuration < 0.f)
-                    exahustDuration = 0.f;
-            }
+        }
+        if (not thrustActived)
+        {
+            exhaustDuration -= dt;
+            if (exhaustDuration < 0.f)
+                exhaustDuration = 0.f;
         }
         thrustActived = false;
     }
@@ -102,9 +104,9 @@ public:
         // by the way draw the hit box at some point to make sure it matches texture use transparency
         window.draw(shipVisual);
 
-        if (exahustDuration > 0)
+        if (exhaustDuration > 0)
         {
-            window.draw(rocketFlameVisual);
+            window.draw(exhaustVisual);
         }
     }
 
@@ -112,11 +114,11 @@ private:
     sf::Texture shipTexture; // 48 by 48 pixels
     sf::Sprite shipVisual; // use for visual and animating stuff. Also use for shadows potentially
     
-    std::array<sf::Texture, 4> rocketFlameAnimation;
-    sf::Texture rocketFlameTexture;
-    sf::Sprite rocketFlameVisual; // for visual animation of thruster
+    std::array<sf::Texture, 4> exahustAnimation;
+    sf::Texture exhaustTexture;
+    sf::Sprite exhaustVisual; // for visual animation of thruster
     bool thrustActived = false;
-    float exahustDuration { 0 };
+    float exhaustDuration{ 0 };
 
     sf::ConvexShape shipHitBox; // use this for collsions and phyrics and what not
     sf::Vector2f velocity;
@@ -129,7 +131,7 @@ private:
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
-    window.setFramerateLimit(60);
+    window.setFramerateLimit(240);
 
     PlayerShip player;
 
