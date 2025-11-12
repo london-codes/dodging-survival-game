@@ -15,8 +15,13 @@ class PlayerShip
 {
 public:
     PlayerShip()
-        : texture("assets/player.png"), shipVisual(texture)
+        : shipTexture("assets/playership.png"), shipVisual(shipTexture), 
+        exhaustTexture("assets/flame2.png"), exhaustVisual(exhaustTexture) // right now I need this intiated with dummy so that origin and position can be set
+        // correctly. Maybe find a way so I don't have to intiate this with just one of the flame.png's
     {
+        // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
+
+        // HitBox
         shipHitBox.setPointCount(8);
         // roughly hitbox for now I'll adjust when I have something to test collsiosn with // could use all positive values and just corretly set orgin after
         shipHitBox.setPoint(0, sf::Vector2f{-10, -20 });
@@ -29,54 +34,104 @@ public:
         shipHitBox.setPoint(7, sf::Vector2f{-10, 10 });
         shipHitBox.setPosition({ 800.f,450.f });
 
-        // need to fix origin of sprite so rotation looks normal
-        shipVisual.setScale(sf::Vector2f {2.f, 2.f});
+        //Ship visuals
+        shipVisual.setScale({1.f, 1.f});
+        shipVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 });
         shipVisual.setPosition({ 800.f,450.f });
+
+        // Thruster Visual
+        exahustAnimation[0].loadFromFile("assets/flame1.png");
+        exahustAnimation[1].loadFromFile("assets/flame2.png");
+        exahustAnimation[2].loadFromFile("assets/flame3.png");
+        exahustAnimation[3].loadFromFile("assets/flame4.png");
+        exhaustVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, -shipVisual.getLocalBounds().size.y / 2 });
+        exhaustVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
+  
     }
 
-    void rotateRight() { shipVisual.rotate(-rotationRate); shipHitBox.rotate(-rotationRate); }
-    void rotateLeft() { shipVisual.rotate(rotationRate); shipHitBox.rotate(rotationRate); }
+    void rotateRight(float dt) { shipVisual.rotate(-rotationRate * dt); shipHitBox.rotate(-rotationRate * dt); exhaustVisual.rotate(-rotationRate * dt);  }
+    void rotateLeft(float dt) { shipVisual.rotate(rotationRate * dt); shipHitBox.rotate(rotationRate * dt); exhaustVisual.rotate(rotationRate * dt);    }
 
 
     // based of input from w key the thrust is added to the velocity of the ship
-    void forwardThrust(float time)
+    void forwardPropulsion(float dt)
     {
+        // increasing the velocity in whatever dirction based on w key being pressed.
         float xDirection = std::cos((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
         float yDirection = std::sin((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
-        acceleration = { speed * time * xDirection, speed * time * yDirection };
-        velocity = velocity + acceleration;
-        acceleration = { 0, 0 };
+        acceleration = { speed * dt * xDirection, speed * dt * yDirection };
+        velocity = (velocity + acceleration);
+
+        thrustActived = true;
+        exhaustDuration += dt;
     }
 
-    // simply updates the position of the ship every frame based on the ships current velocity which is stored in private
-    void update()
+    // simply updates Everything about the ship to get ready for rendering
+    void update(float dt)
     {
-        shipVisual.move(velocity);
-        shipHitBox.move(velocity);
+        // Moving all parts of the ship correctly.
+        shipHitBox.move(velocity * dt);
+        shipVisual.move(velocity * dt);
+        exhaustVisual.move(velocity * dt);
+
+        // Logic for smooth animation of rocket Exahust.
+        if (exhaustDuration > 0)
+        {
+            if (exhaustDuration < 0.07f)
+                exhaustVisual.setTexture(exahustAnimation[0]);
+            else if (exhaustDuration < 0.15f)
+                exhaustVisual.setTexture(exahustAnimation[1]);
+            else if (exhaustDuration < 0.25f)
+                exhaustVisual.setTexture(exahustAnimation[2]);
+            else
+            {
+                exhaustVisual.setTexture(exahustAnimation[3]);
+                exhaustDuration = 0.24f; // cap it at max flame
+            }
+        }
+        if (not thrustActived)
+        {
+            exhaustDuration -= dt;
+            if (exhaustDuration < 0.f)
+                exhaustDuration = 0.f;
+        }
+        thrustActived = false;
     }
 
+    // draws the ship and its exhaust
     void draw(sf::RenderWindow& window)
     {
         // by the way draw the hit box at some point to make sure it matches texture use transparency
         window.draw(shipVisual);
+
+        if (exhaustDuration > 0)
+        {
+            window.draw(exhaustVisual);
+        }
     }
 
 private:
-    sf::Texture texture;
+    sf::Texture shipTexture; // 48 by 48 pixels
     sf::Sprite shipVisual; // use for visual and animating stuff. Also use for shadows potentially
-    // At some point add second shipVisualRocket for thruster animation spereately
+    
+    std::array<sf::Texture, 4> exahustAnimation;
+    sf::Texture exhaustTexture;
+    sf::Sprite exhaustVisual; // for visual animation of thruster
+    bool thrustActived = false;
+    float exhaustDuration{ 0 };
+
     sf::ConvexShape shipHitBox; // use this for collsions and phyrics and what not
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
-    sf::Angle rotationRate{ sf::degrees(1.5f) };
+    sf::Angle rotationRate{ sf::degrees(270.f) };
     int health{ 100 };
-    float speed{ 2.f };
+    float speed{ 300.f };
 };
 
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
-    window.setFramerateLimit(144);
+    window.setFramerateLimit(240);
 
     PlayerShip player;
 
@@ -102,23 +157,23 @@ int main()
         // inputs
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         {
-            player.forwardThrust(dt);
+            player.forwardPropulsion(dt);
         }
 
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         {
-            player.rotateRight();
+            player.rotateRight(dt);
         }
 
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         {
-            player.rotateLeft();
+            player.rotateLeft(dt);
         }
 
         // updates
-        player.update();
+        player.update(dt);
 
         // render
         window.clear(sf::Color(25, 25, 112));
