@@ -15,7 +15,7 @@ class PlayerShip
 {
 public:
     PlayerShip()
-        : shipTexture("assets/playership.png"), shipVisual(shipTexture), rocketFlameTexture("assets/flame.png"), rocketFlameVisual(rocketFlameTexture)
+        : shipTexture("assets/playership.png"), shipVisual(shipTexture), rocketFlameTexture("assets/flame2.png"), rocketFlameVisual(rocketFlameTexture)
     {
         // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
 
@@ -38,6 +38,10 @@ public:
         shipVisual.setPosition({ 800.f,450.f });
 
         // Thruster Visual
+        rocketFlameAnimation[0].loadFromFile("assets/flame1.png");
+        rocketFlameAnimation[1].loadFromFile("assets/flame2.png");
+        rocketFlameAnimation[2].loadFromFile("assets/flame3.png");
+        rocketFlameAnimation[3].loadFromFile("assets/flame4.png");
         rocketFlameVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, -shipVisual.getLocalBounds().size.y / 2 });
         rocketFlameVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
   
@@ -48,44 +52,71 @@ public:
 
 
     // based of input from w key the thrust is added to the velocity of the ship
-    void forwardPropulsion(float time)
+    void forwardPropulsion(float dt)
     {
-        // add in somewhere so that the rocketFlame animation is called
+        // increasing the velocity in whatever dirction based on w key being pressed.
         float xDirection = std::cos((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
         float yDirection = std::sin((shipHitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
-        acceleration = { speed * time * xDirection, speed * time * yDirection };
+        acceleration = { speed * dt * xDirection, speed * dt * yDirection };
         velocity = (velocity + acceleration);
-        acceleration = { 0, 0 };
-        rocketFlameVisualToggle = true;
+
+        thrustActived = true;
+        exahustDuration += dt;
     }
 
-    // simply updates the position of the ship every frame based on the ships current velocity which is stored in private
+    // simply updates Everything about the ship to get ready for rendering
     void update(float dt)
     {
+        // Moving all parts of the ship correctly.
         shipHitBox.move(velocity * dt);
         shipVisual.move(velocity * dt);
         rocketFlameVisual.move(velocity * dt);
+
+        // Logic for smooth animation of rocket Exahust.
+        if (exahustDuration > 0)
+        {
+            if (exahustDuration < 0.07f)
+                rocketFlameVisual.setTexture(rocketFlameAnimation[0]);
+            else if (exahustDuration < 0.15f)
+                rocketFlameVisual.setTexture(rocketFlameAnimation[1]);
+            else if (exahustDuration < 0.25f)
+                rocketFlameVisual.setTexture(rocketFlameAnimation[2]);
+            else
+            {
+                rocketFlameVisual.setTexture(rocketFlameAnimation[3]);
+                exahustDuration = 0.26f; // cap it at max flame
+            }
+            if (not thrustActived)
+            {
+                exahustDuration -= dt;
+                if (exahustDuration < 0.f)
+                    exahustDuration = 0.f;
+            }
+        }
+        thrustActived = false;
     }
 
+    // draws the ship and its exhaust
     void draw(sf::RenderWindow& window)
     {
         // by the way draw the hit box at some point to make sure it matches texture use transparency
         window.draw(shipVisual);
-        if (rocketFlameVisualToggle)
+
+        if (exahustDuration > 0)
         {
             window.draw(rocketFlameVisual);
-            rocketFlameVisualToggle = false;
         }
-        
     }
 
 private:
-    sf::Texture shipTexture;
+    sf::Texture shipTexture; // 48 by 48 pixels
     sf::Sprite shipVisual; // use for visual and animating stuff. Also use for shadows potentially
-
+    
+    std::array<sf::Texture, 4> rocketFlameAnimation;
     sf::Texture rocketFlameTexture;
     sf::Sprite rocketFlameVisual; // for visual animation of thruster
-    bool rocketFlameVisualToggle{ false };
+    bool thrustActived = false;
+    float exahustDuration { 0 };
 
     sf::ConvexShape shipHitBox; // use this for collsions and phyrics and what not
     sf::Vector2f velocity;
@@ -98,7 +129,7 @@ private:
 int main()
 {
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
-    window.setFramerateLimit(240);
+    window.setFramerateLimit(60);
 
     PlayerShip player;
 
