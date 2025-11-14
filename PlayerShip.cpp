@@ -1,14 +1,11 @@
-#include <cmath>
 #include "PlayerShip.h"
 
 
 PlayerShip::PlayerShip()
     : shipTexture("assets/playership.png"), shipVisual(shipTexture),
-    exhaustTexture("assets/flame2.png"), exhaustVisual(exhaustTexture) // right now I need this intiated with dummy so that origin and position can be set
-    // correctly. Maybe find a way so I don't have to intiate this with just one of the flame.png's
+    exhaustVisual(shipTexture) // dummy texture for now.
 {
     // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
-
     // HitBox
     shipHitBox.setPointCount(8);
     // roughly hitbox for now I'll adjust when I have something to test collsiosn with // could use all positive values and just corretly set orgin after
@@ -28,17 +25,19 @@ PlayerShip::PlayerShip()
     shipVisual.setPosition({ 800.f,450.f });
 
     // Thruster Visual
-    exahustAnimation[0].loadFromFile("assets/flame1.png");
-    exahustAnimation[1].loadFromFile("assets/flame2.png");
-    exahustAnimation[2].loadFromFile("assets/flame3.png");
-    exahustAnimation[3].loadFromFile("assets/flame4.png");
+    if (!exhaustAnimation[0].loadFromFile("assets/flame1.png"))
+        std::cerr << "Failed to load assets/flame1.png\n";
+    if (!exhaustAnimation[1].loadFromFile("assets/flame2.png"))
+        std::cerr << "Failed to load assets/flame2.png\n";
+    if (!exhaustAnimation[2].loadFromFile("assets/flame3.png"))
+        std::cerr << "Failed to load assets/flame3.png\n";
+    if (!exhaustAnimation[3].loadFromFile("assets/flame4.png"))
+        std::cerr << "Failed to load assets/flame4.png\n";
+
     exhaustVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, -shipVisual.getLocalBounds().size.y / 2 });
     exhaustVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
 
 }
-
-
-
 
 // based of input from w key the thrust is added to the velocity of the ship
 void PlayerShip::forwardPropulsion(float dt)
@@ -65,14 +64,14 @@ void PlayerShip::update(float dt)
     if (exhaustDuration > 0)
     {
         if (exhaustDuration < 0.07f)
-            exhaustVisual.setTexture(exahustAnimation[0]);
+            exhaustVisual.setTexture(exhaustAnimation[0]);
         else if (exhaustDuration < 0.15f)
-            exhaustVisual.setTexture(exahustAnimation[1]);
+            exhaustVisual.setTexture(exhaustAnimation[1]);
         else if (exhaustDuration < 0.25f)
-            exhaustVisual.setTexture(exahustAnimation[2]);
+            exhaustVisual.setTexture(exhaustAnimation[2]);
         else
         {
-            exhaustVisual.setTexture(exahustAnimation[3]);
+            exhaustVisual.setTexture(exhaustAnimation[3]);
             exhaustDuration = 0.24f; // cap it at max flame
         }
     }

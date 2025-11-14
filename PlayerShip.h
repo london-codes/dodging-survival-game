@@ -1,6 +1,8 @@
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <array>
+#include <cmath>
+#include <iostream>
 
 class PlayerShip
 {
@@ -23,8 +25,7 @@ private:
     sf::Texture shipTexture; // 48 by 48 pixels
     sf::Sprite shipVisual; // use for visual and animating stuff. Also use for shadows potentially
 
-    std::array<sf::Texture, 4> exahustAnimation;
-    sf::Texture exhaustTexture;
+    std::array<sf::Texture, 4> exhaustAnimation;
     sf::Sprite exhaustVisual; // for visual animation of thruster
     bool thrustActived = false;
     float exhaustDuration{ 0 };

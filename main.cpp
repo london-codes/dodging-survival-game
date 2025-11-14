@@ -3,8 +3,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "PlayerShip.h"
-// Make into HEADER at some point
-//constant pi
+
 
 
 int main()
