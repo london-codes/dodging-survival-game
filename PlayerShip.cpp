@@ -6,9 +6,9 @@ PlayerShip::PlayerShip()
     exhaustVisual(shipTexture) // sf::Sprite has not default constructor so it needs to be initializer list with dummy texture
 {
     // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
+
     // HitBox
     shipHitBox.setPointCount(8);
-    // roughly hitbox for now I'll adjust when I have something to test collsiosn with // could use all positive values and just corretly set orgin after
     shipHitBox.setPoint(0, sf::Vector2f{ -7, -20 });
     shipHitBox.setPoint(1, sf::Vector2f{ 7, -20 });
     shipHitBox.setPoint(2, sf::Vector2f{ 7, 10 });
@@ -88,7 +88,6 @@ void PlayerShip::update(float dt)
 void PlayerShip::draw(sf::RenderWindow& window)
 {
     // by the way draw the hit box at some point to make sure it matches texture use transparency
-    window.draw(shipHitBox);
     window.draw(shipVisual);
 
     if (exhaustDuration > 0)
