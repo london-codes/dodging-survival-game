@@ -3,7 +3,7 @@
 
 PlayerShip::PlayerShip()
     : shipTexture("assets/playership.png"), shipVisual(shipTexture),
-    exhaustVisual(shipTexture) // dummy texture for now.
+    exhaustVisual(shipTexture) // sf::Sprite has not default constructor so it needs to be initializer list with dummy texture
 {
     // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
     // HitBox

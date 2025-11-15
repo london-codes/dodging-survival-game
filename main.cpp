@@ -1,20 +1,24 @@
 
 //#include <SFML/OpenGL.hpp>
+
 #include <SFML/Graphics.hpp>
 #include <iostream>
 #include "PlayerShip.h"
-
+#include "Meteor.h"
 
 
 int main()
 {
+
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
     window.setFramerateLimit(240);
 
     PlayerShip player;
 
-    sf::Clock clock;
+    Meteor meteor;
 
+    sf::Clock clock;
+ 
 
     while (window.isOpen())
     {
@@ -25,8 +29,6 @@ int main()
             {
                 window.close();
             }
-
-
         }
 
         // time mechanics
@@ -52,10 +54,11 @@ int main()
 
         // updates
         player.update(dt);
-
+        meteor.update(dt);
         // render
         window.clear(sf::Color(25, 25, 112));
         player.draw(window);
+        meteor.draw(window);
         window.display();
     }
 }

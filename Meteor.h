@@ -10,7 +10,7 @@ class Meteor
 
 public:
 
-
+    Meteor();
 
     // some type of random type fucntion taht gets a random velcoity and position to set the vlecotiy of it do
 
