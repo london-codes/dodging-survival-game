@@ -9,7 +9,6 @@
 
 int main()
 {
-
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
     window.setFramerateLimit(240);
 
