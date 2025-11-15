@@ -27,6 +27,5 @@ void Meteor::update(float dt)
 
 void Meteor::draw(sf::RenderWindow& window)
 {
-    window.draw(hitBox);
     window.draw(visual);
 }
