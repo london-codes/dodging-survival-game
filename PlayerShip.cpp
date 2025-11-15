@@ -9,20 +9,27 @@ PlayerShip::PlayerShip()
     // HitBox
     shipHitBox.setPointCount(8);
     // roughly hitbox for now I'll adjust when I have something to test collsiosn with // could use all positive values and just corretly set orgin after
-    shipHitBox.setPoint(0, sf::Vector2f{ -10, -20 });
-    shipHitBox.setPoint(1, sf::Vector2f{ 10, -20 });
-    shipHitBox.setPoint(2, sf::Vector2f{ 10, 10 });
+    shipHitBox.setPoint(0, sf::Vector2f{ -7, -20 });
+    shipHitBox.setPoint(1, sf::Vector2f{ 7, -20 });
+    shipHitBox.setPoint(2, sf::Vector2f{ 7, 10 });
     shipHitBox.setPoint(3, sf::Vector2f{ 15, 10 });
-    shipHitBox.setPoint(4, sf::Vector2f{ 15, 20 });
-    shipHitBox.setPoint(5, sf::Vector2f{ -15, 20 });
+    shipHitBox.setPoint(4, sf::Vector2f{ 15, 22 });
+    shipHitBox.setPoint(5, sf::Vector2f{ -15, 22 });
     shipHitBox.setPoint(6, sf::Vector2f{ -15, 10 });
-    shipHitBox.setPoint(7, sf::Vector2f{ -10, 10 });
+    shipHitBox.setPoint(7, sf::Vector2f{ -7, 10 });
     shipHitBox.setPosition({ 800.f,450.f });
 
     //Ship visuals
     shipVisual.setScale({ 1.f, 1.f });
     shipVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 });
     shipVisual.setPosition({ 800.f,450.f });
+    //temperaroy
+    sf::Color c = shipVisual.getColor();
+
+    // modify alpha
+    c.a = 128; // 50% transparent
+
+    shipVisual.setColor(c);
 
     // Thruster Visual
     if (!exhaustAnimation[0].loadFromFile("assets/flame1.png"))
@@ -88,6 +95,7 @@ void PlayerShip::update(float dt)
 void PlayerShip::draw(sf::RenderWindow& window)
 {
     // by the way draw the hit box at some point to make sure it matches texture use transparency
+    window.draw(shipHitBox);
     window.draw(shipVisual);
 
     if (exhaustDuration > 0)
