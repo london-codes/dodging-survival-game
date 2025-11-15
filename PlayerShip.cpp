@@ -23,13 +23,6 @@ PlayerShip::PlayerShip()
     shipVisual.setScale({ 1.f, 1.f });
     shipVisual.setOrigin({ shipVisual.getLocalBounds().size.x / 2, shipVisual.getLocalBounds().size.y / 2 });
     shipVisual.setPosition({ 800.f,450.f });
-    //temperaroy
-    sf::Color c = shipVisual.getColor();
-
-    // modify alpha
-    c.a = 128; // 50% transparent
-
-    shipVisual.setColor(c);
 
     // Thruster Visual
     if (!exhaustAnimation[0].loadFromFile("assets/flame1.png"))
