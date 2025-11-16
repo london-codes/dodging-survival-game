@@ -52,10 +52,13 @@ void PlayerShip::forwardPropulsion(float dt)
     exhaustDuration += dt;
 }
 
-void PlayerShip::collision()
+// input is the the other object its colliding with mass and velocity
+//CURENTTLY NOTE USING MIGHT GET RID OF
+void PlayerShip::collision(float otherMass, sf::Vector2f otherVelocity)
 {
+    /*
     // new velocity direciton
-    velocity = velocity * -1.f;
+        velocity = velocity * -1.f;
 
     // moves the ship 1 in x and y direction that your new oppositive velocity is so that it doesn't get stuck
     // although I don't think this will really work when the ship doesn't necesarrily full change direction right
@@ -65,15 +68,27 @@ void PlayerShip::collision()
     // objects the hit. IE intertia
     // could even add fiction constant to help kind of introduced likea drag type thing that slows down total velcoity of all things
     sf::Vector2f newpos = hitBox.getPosition() + sf::Vector2f(
-        velocity.x / abs(velocity.x),
+        velocity.x / abs(velocity.x), //velocity.x / abs(velocity.x) gets the purely the direction that object is now in.
         velocity.y / abs(velocity.y)
     );
+    
+    
+    */
+    velocity.x = ((mass - otherMass) / (mass + otherMass)) * velocity.x
+        + ((2 * otherMass) / (mass + otherMass)) * otherVelocity.x;
+    velocity.y = ((mass - otherMass) / (mass + otherMass)) * velocity.y
+        + ((2 * otherMass) / (mass + otherMass)) * otherVelocity.y;
+
+    /*
+    
 
     // Step 2: set positions
     hitBox.setPosition(newpos);
     visual.setPosition(newpos);
     exhaustVisual.setPosition(newpos);
 
+    
+    */
 }
 
 // simply updates Everything about the ship to get ready for rendering

@@ -15,10 +15,7 @@ public:
     // based of input from w key the thrust is added to the velocity of the ship
     void forwardPropulsion(float dt);
 
-    sf::FloatRect getGlobalPos() { return hitBox.getGlobalBounds(); }
-    sf::Vector2f getVector() { return velocity; }
-
-    void collision();
+    void collision(float, sf::Vector2f);
 
     // simply updates Everything about the ship to get ready for rendering
     void update(float dt);
@@ -26,8 +23,11 @@ public:
     // draws the ship and its exhaust
     void draw(sf::RenderWindow& window);
 
-
-
+    sf::ConvexShape getHitBox() { return hitBox; }
+    sf::FloatRect getGlobalPos() { return hitBox.getGlobalBounds(); }
+    sf::Vector2f getVelocity() { return velocity; }
+    float getMass() { return mass; }
+    void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
 
 private:
     sf::Texture texture; // 48 by 48 pixels
@@ -42,6 +42,7 @@ private:
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     sf::Angle rotationRate{ sf::degrees(270.f) };
+    float mass{ 1001 };
     int health{ 100 };
     float speed{ 300.f };
 };

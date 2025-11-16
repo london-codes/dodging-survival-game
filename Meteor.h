@@ -14,14 +14,19 @@ public:
 
     // some type of random type fucntion taht gets a random velcoity and position to set the vlecotiy of it do
 
-    sf::FloatRect getGlobalPos(){return hitBox.getGlobalBounds();}
-    sf::Vector2f getVector() { return velocity; }
+    
 
-    void collision();
+    void collision(float, sf::Vector2f);
 
     void update(float dt);
 
     void draw(sf::RenderWindow& window);
+
+    sf::ConvexShape getHitBox() { return hitBox; } // maybe need
+    sf::FloatRect getGlobalPos() { return hitBox.getGlobalBounds(); }
+    sf::Vector2f getVelocity() { return velocity; }
+    float getMass() { return mass; }
+    void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
 
 private:
     sf::Texture texture; // 
@@ -34,6 +39,7 @@ private:
 
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
-    float speed{ 300.f };
+    float mass{ 1000.f };
+
 };
 

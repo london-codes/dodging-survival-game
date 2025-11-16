@@ -5,6 +5,7 @@
 #include <iostream>
 #include "PlayerShip.h"
 #include "Meteor.h"
+#include "Physics.h"
 
 
 int main()
@@ -15,6 +16,8 @@ int main()
     PlayerShip player;
 
     Meteor meteor;
+
+    Physics physics;
 
     sf::Clock clock;
  
@@ -39,30 +42,31 @@ int main()
             player.forwardPropulsion(dt);
         }
 
-
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
         {
             player.rotateRight(dt);
         }
-
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
         {
             player.rotateLeft(dt);
         }
 
+
         // updates
         player.update(dt);
         meteor.update(dt);
 
+
         // collisions
         if (player.getGlobalPos().findIntersection(meteor.getGlobalPos()))
         {
-            player.collision();
+            physics.collision(player, meteor);
+
+            //meteor.collision(player.getMass(), player.getVelocity());
+            //player.collision(meteor.getMass(), meteor.getVelocity());
         }
     
-
-
 
         // render
         window.clear(sf::Color(25, 25, 112));
