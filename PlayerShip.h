@@ -14,8 +14,7 @@ public:
         hitBox.rotate(-rotationRate * dt);
         exhaustVisual.rotate(-rotationRate * dt); }
     
-    void rotateLeft(float dt) {
-        visual.rotate(rotationRate * dt);
+    void rotateLeft(float dt) { visual.rotate(rotationRate * dt);
         hitBox.rotate(rotationRate * dt);
         exhaustVisual.rotate(rotationRate * dt);
     }

@@ -36,6 +36,7 @@ int main()
         // time mechanics
         float dt = clock.restart().asSeconds();
 
+
         // inputs
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
         {
