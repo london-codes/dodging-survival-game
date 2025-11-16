@@ -54,6 +54,16 @@ int main()
         // updates
         player.update(dt);
         meteor.update(dt);
+
+        // collisions
+        if (player.getGlobalPos().findIntersection(meteor.getGlobalPos()))
+        {
+            player.collision();
+        }
+    
+
+
+
         // render
         window.clear(sf::Color(25, 25, 112));
         player.draw(window);

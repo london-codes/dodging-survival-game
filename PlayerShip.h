@@ -15,11 +15,19 @@ public:
     // based of input from w key the thrust is added to the velocity of the ship
     void forwardPropulsion(float dt);
 
+    sf::FloatRect getGlobalPos() { return shipHitBox.getGlobalBounds(); }
+    sf::Vector2f getVector() { return velocity; }
+
+    void collision();
+
     // simply updates Everything about the ship to get ready for rendering
     void update(float dt);
 
     // draws the ship and its exhaust
     void draw(sf::RenderWindow& window);
+
+
+
 
 private:
     sf::Texture shipTexture; // 48 by 48 pixels

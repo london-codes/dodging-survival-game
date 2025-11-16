@@ -52,6 +52,30 @@ void PlayerShip::forwardPropulsion(float dt)
     exhaustDuration += dt;
 }
 
+void PlayerShip::collision()
+{
+    // new velocity direciton
+    velocity = velocity * -1.f;
+
+    // moves the ship 1 in x and y direction that your new oppositive velocity is so that it doesn't get stuck
+    // although I don't think this will really work when the ship doesn't necesarrily full change direction right
+    // So i think I should do more of a check to see if hit boxes are still colliding after velocity change with like
+    // a > check and then set positoin after that
+    // I think im going to need to assing mass to objects so that I based on there mass/weight they are affected more or less by
+    // objects the hit. IE intertia
+    // could even add fiction constant to help kind of introduced likea drag type thing that slows down total velcoity of all things
+    sf::Vector2f newpos = shipHitBox.getPosition() + sf::Vector2f(
+        velocity.x / abs(velocity.x),
+        velocity.y / abs(velocity.y)
+    );
+
+    // Step 2: set positions
+    shipHitBox.setPosition(newpos);
+    shipVisual.setPosition(newpos);
+    exhaustVisual.setPosition(newpos);
+
+}
+
 // simply updates Everything about the ship to get ready for rendering
 void PlayerShip::update(float dt)
 {

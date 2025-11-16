@@ -14,7 +14,10 @@ public:
 
     // some type of random type fucntion taht gets a random velcoity and position to set the vlecotiy of it do
 
+    sf::FloatRect getGlobalPos(){return hitBox.getGlobalBounds();}
+    sf::Vector2f getVector() { return velocity; }
 
+    void collision();
 
     void update(float dt);
 

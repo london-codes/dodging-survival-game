@@ -17,6 +17,11 @@ Meteor::Meteor()
 }
 
 
+void Meteor::collision()
+{
+    velocity = velocity * -1.f;
+}
+
 void Meteor::update(float dt)
 {
     hitBox.move(velocity * dt);
