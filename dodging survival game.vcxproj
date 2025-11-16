@@ -146,6 +146,7 @@
   <ItemGroup>
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Meteor.cpp" />
+    <ClCompile Include="Physics.cpp" />
     <ClCompile Include="PlayerShip.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -159,6 +160,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Meteor.h" />
+    <ClInclude Include="Physics.h" />
     <ClInclude Include="PlayerShip.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
