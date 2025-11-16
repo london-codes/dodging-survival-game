@@ -1,4 +1,4 @@
-#include "PlayerShip.h"
+﻿#include "PlayerShip.h"
 
 
 PlayerShip::PlayerShip()
@@ -38,6 +38,21 @@ PlayerShip::PlayerShip()
     exhaustVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
 
 }
+
+///// Code for making rotation affected by physics and acceleration //////
+/*
+void PlayerShip::rotateRight(float dt) {
+    if (rotationVelocity.asDegrees() > -maxRotationVelocity.asDegrees())
+        rotationVelocity -= rotationRate * dt;
+}
+
+void PlayerShip::rotateLeft(float dt) {
+    if (rotationVelocity.asDegrees() < maxRotationVelocity.asDegrees())
+        rotationVelocity += rotationRate * dt;
+}
+*/
+
+
 
 // based of input from w key the thrust is added to the velocity of the ship
 void PlayerShip::forwardPropulsion(float dt)
@@ -94,7 +109,7 @@ void PlayerShip::collision(float otherMass, sf::Vector2f otherVelocity)
 // simply updates Everything about the ship to get ready for rendering
 void PlayerShip::update(float dt)
 {
-    // Moving all parts of the ship correctly.
+    // updating position of ship
     hitBox.move(velocity * dt);
     visual.move(velocity * dt);
     exhaustVisual.move(velocity * dt);
