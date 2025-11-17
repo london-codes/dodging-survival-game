@@ -1,7 +1,9 @@
 #include "Meteor.h"
+#include "Textures.h"
+
 
 Meteor::Meteor()
-    : texture("assets/meteor.png"), visual(texture), velocity{ 100.f, 0.f } // to test
+    : visual(TEXTURES.meteor), velocity{ 100.f, 0.f } // to test
 {
 
 

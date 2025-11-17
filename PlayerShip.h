@@ -39,10 +39,10 @@ public:
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
 
 private:
-    sf::Texture texture; // 48 by 48 pixels
+
     sf::Sprite visual; // use for visual and animating stuff. Also use for shadows potentially
 
-    std::array<sf::Texture, 4> exhaustAnimation;
+
     sf::Sprite exhaustVisual; // for visual animation of thruster
     bool thrustActived = false;
     float exhaustDuration{ 0 };
@@ -52,10 +52,11 @@ private:
     sf::Vector2f acceleration;
     float mass{ 1001 };
     float speed{ 300.f };
+    int health{ 1000 };
+    int damge{ 50 };
+
 
     sf::Angle rotationRate{ sf::degrees(270.f) };
-
-    int health{ 100 };
 
     //// phyiscs style rotation ////
     /*

@@ -6,6 +6,7 @@
 #include "PlayerShip.h"
 #include "Meteor.h"
 #include "Physics.h"
+#include "Textures.h"
 
 
 int main()
@@ -14,11 +15,15 @@ int main()
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
     window.setFramerateLimit(240);
 
+    TEXTURES.load();
+
     // loop for a restart
-    bool paused{ false };
     bool running{ true };
+    bool paused{ false };
     while (running)
     {
+
+
         PlayerShip player;
 
         Meteor meteor;
@@ -30,6 +35,9 @@ int main()
 
         while (window.isOpen())
         {
+
+            // time mechanics
+            float dt = clock.restart().asSeconds();
 
             while (const std::optional event = window.pollEvent())
             {
@@ -49,11 +57,14 @@ int main()
 
             }
 
-            // time mechanics
-            float dt = clock.restart().asSeconds();
-
             if (paused)
+            {
+                window.clear(sf::Color(0, 0, 0));
+                player.draw(window);
+                meteor.draw(window);
+                window.display();
                 continue;
+            }
 
             // inputs
 

@@ -1,9 +1,8 @@
 ﻿#include "PlayerShip.h"
-
+#include "Textures.h"
 
 PlayerShip::PlayerShip()
-    : texture("assets/playership.png"), visual(texture),
-    exhaustVisual(texture) // sf::Sprite has not default constructor so it needs to be initializer list with dummy texture
+    : visual(TEXTURES.playerShip), exhaustVisual(TEXTURES.playerShip) // sf::Sprite has no default constructor so it needs to be initializer list with dummy texture
 {
     // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
 
@@ -24,16 +23,7 @@ PlayerShip::PlayerShip()
     visual.setOrigin({ visual.getLocalBounds().size.x / 2, visual.getLocalBounds().size.y / 2 });
     visual.setPosition({ 800.f,450.f });
 
-    // Thruster Visual
-    if (!exhaustAnimation[0].loadFromFile("assets/flame1.png"))
-        std::cerr << "Failed to load assets/flame1.png\n";
-    if (!exhaustAnimation[1].loadFromFile("assets/flame2.png"))
-        std::cerr << "Failed to load assets/flame2.png\n";
-    if (!exhaustAnimation[2].loadFromFile("assets/flame3.png"))
-        std::cerr << "Failed to load assets/flame3.png\n";
-    if (!exhaustAnimation[3].loadFromFile("assets/flame4.png"))
-        std::cerr << "Failed to load assets/flame4.png\n";
-
+    // exhaust visuals
     exhaustVisual.setOrigin({ visual.getLocalBounds().size.x / 2, -visual.getLocalBounds().size.y / 2 });
     exhaustVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
 
@@ -118,14 +108,14 @@ void PlayerShip::update(float dt)
     if (exhaustDuration > 0)
     {
         if (exhaustDuration < 0.07f)
-            exhaustVisual.setTexture(exhaustAnimation[0]);
+            exhaustVisual.setTexture(TEXTURES.exhaustAnimation[0]);
         else if (exhaustDuration < 0.15f)
-            exhaustVisual.setTexture(exhaustAnimation[1]);
+            exhaustVisual.setTexture(TEXTURES.exhaustAnimation[1]);
         else if (exhaustDuration < 0.25f)
-            exhaustVisual.setTexture(exhaustAnimation[2]);
+            exhaustVisual.setTexture(TEXTURES.exhaustAnimation[2]);
         else
         {
-            exhaustVisual.setTexture(exhaustAnimation[3]);
+            exhaustVisual.setTexture(TEXTURES.exhaustAnimation[3]);
             exhaustDuration = 0.24f; // cap it at max flame
         }
     }
