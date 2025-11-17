@@ -34,6 +34,10 @@ public:
 
         object1.setVelocity(newV1);
         object2.setVelocity(newV2);
+
+        // calculate new healths
+        object1.takeDamage(object2.getDamage());
+        object2.takeDamage(object1.getDamage());
     }
 
 private:

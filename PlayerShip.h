@@ -4,6 +4,7 @@
 #include <cmath>
 #include <iostream>
 
+// Make Base class for inheritance so health damage velocity can be part of any object quickly
 class PlayerShip
 {
 public:
@@ -32,12 +33,25 @@ public:
     // draws the ship and its exhaust
     void draw(sf::RenderWindow& window);
 
+    void takeDamage(int amount) {
+        health -= amount;
+        if (health <= 0) gameOver();
+    }
+
+    void gameOver() {
+        //end game here somehow
+    }
+
     sf::ConvexShape getHitBox() { return hitBox; }
     sf::FloatRect getGlobalPos() { return hitBox.getGlobalBounds(); }
     sf::Vector2f getVelocity() { return velocity; }
     float getMass() { return mass; }
-    void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
 
+    int getHealth() { return health; }
+    int getDamage() { return damage; }
+
+    void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
+    void setHealth(int newHealth) { health = newHealth; };
 private:
 
     sf::Sprite visual; // use for visual and animating stuff. Also use for shadows potentially
@@ -53,7 +67,7 @@ private:
     float mass{ 1001 };
     float speed{ 300.f };
     int health{ 1000 };
-    int damge{ 50 };
+    int damage{ 50 };
 
 
     sf::Angle rotationRate{ sf::degrees(270.f) };

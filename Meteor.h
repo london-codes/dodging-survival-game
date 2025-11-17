@@ -22,11 +22,28 @@ public:
 
     void draw(sf::RenderWindow& window);
 
+    void takeDamage(int amount) {
+        health -= amount;
+        if (health <= 0) respawn();
+    }
+///////////////////////////////////////////////////////// fix when random is enabled so set of random screen position
+    void respawn() {
+        visual.setPosition(sf::Vector2f(500.f, 500.f)); // can randomize later
+        hitBox.setPosition(sf::Vector2f(500.f, 500.f));
+        velocity = { sf::Vector2f(0.f, 0.f) };
+        health = 100;
+    }
+
     sf::ConvexShape getHitBox() { return hitBox; } // maybe need
     sf::FloatRect getGlobalPos() { return hitBox.getGlobalBounds(); }
     sf::Vector2f getVelocity() { return velocity; }
     float getMass() { return mass; }
+
+    int getHealth() { return health; }
+    int getDamage() { return damage; }
+
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
+    void setHealth(int newHealth) { health = newHealth; }
 
 private:
     // maybe add struct for textures later
@@ -40,7 +57,7 @@ private:
 
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
-    float mass{ 1000.f };
+    float mass{ 4000.f };
 
 };
 
