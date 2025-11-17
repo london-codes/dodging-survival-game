@@ -162,6 +162,7 @@
     <ClInclude Include="Meteor.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PlayerShip.h" />
+    <ClInclude Include="Textures.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

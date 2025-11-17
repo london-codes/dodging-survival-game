@@ -29,12 +29,13 @@ public:
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
 
 private:
-    sf::Texture texture; // 
+    // maybe add struct for textures later
     sf::Sprite visual; // 
 
 
     sf::ConvexShape hitBox; // use this for collsions and phyrics and what not
-    int health{ 100 };
+    int health{ 150 };
+    int damage{ 100 }; 
 
 
     sf::Vector2f velocity;
