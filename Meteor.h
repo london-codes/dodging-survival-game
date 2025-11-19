@@ -3,18 +3,18 @@
 #include <array>
 #include <cmath>
 #include <iostream>
-
+#include "Random.h"
 
 class Meteor
 {
 
 public:
 
+    // shared clock for all metoers for when to launch
+
     Meteor();
 
     // some type of random type fucntion taht gets a random velcoity and position to set the vlecotiy of it do
-
-    
 
     void collision(float, sf::Vector2f);
 
@@ -28,10 +28,16 @@ public:
     }
 ///////////////////////////////////////////////////////// fix when random is enabled so set of random screen position
     void respawn() {
-        visual.setPosition(sf::Vector2f(500.f, 500.f)); // can randomize later
-        hitBox.setPosition(sf::Vector2f(500.f, 500.f));
+        float randx = static_cast<float>(Random::get(0, 500));
+        float randy = static_cast<float>(Random::get(0, 500));
+
+        visual.setPosition(sf::Vector2f(randx, randy));
+        hitBox.setPosition(sf::Vector2f(randx, randy));
         velocity = { sf::Vector2f(0.f, 0.f) };
-        health = 100;
+        health = 150;
+        
+
+        launchTime = launchClock.getElapsedTime().asSeconds() + Random::get(2, 30);
     }
 
     sf::ConvexShape getHitBox() { return hitBox; } // maybe need
@@ -46,15 +52,21 @@ public:
     void setHealth(int newHealth) { health = newHealth; }
 
 private:
-    // maybe add struct for textures later
-    sf::Sprite visual; // 
+
+    sf::Sprite visual; 
 
 
     sf::ConvexShape hitBox; // use this for collsions and phyrics and what not
     int health{ 150 };
     int damage{ 100 }; 
 
+    // launch time
 
+    static inline sf::Clock launchClock;
+    sf::Vector2f launchVelocity{ 300, 0 }; // set for etsing for now
+    float launchTime;
+
+    // current physics
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     float mass{ 4000.f };

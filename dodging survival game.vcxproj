@@ -159,6 +159,7 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Random.h" />
     <ClInclude Include="Meteor.h" />
     <ClInclude Include="Physics.h" />
     <ClInclude Include="PlayerShip.h" />

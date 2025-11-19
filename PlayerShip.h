@@ -35,7 +35,6 @@ public:
 
     void takeDamage(int amount) {
         health -= amount;
-        if (health <= 0) gameOver();
     }
 
     void gameOver() {
