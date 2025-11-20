@@ -104,7 +104,7 @@ void PlayerShip::update(float dt)
     visual.move(velocity * dt);
     exhaustVisual.move(velocity * dt);
 
-    // Logic for smooth animation of rocket Exahust.
+    // rocekt exhaust animation.
     if (exhaustDuration > 0)
     {
         if (exhaustDuration < 0.07f)

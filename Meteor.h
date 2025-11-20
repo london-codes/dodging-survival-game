@@ -4,13 +4,12 @@
 #include <cmath>
 #include <iostream>
 #include "Random.h"
+#include <utility>
 
 class Meteor
 {
 
 public:
-
-    // shared clock for all metoers for when to launch
 
     Meteor();
 
@@ -26,19 +25,14 @@ public:
         health -= amount;
         if (health <= 0) respawn();
     }
-///////////////////////////////////////////////////////// fix when random is enabled so set of random screen position
-    void respawn() {
-        float randx = static_cast<float>(Random::get(0, 500));
-        float randy = static_cast<float>(Random::get(0, 500));
+    ///////////////////////////////////////////////////////// fix when random is enabled so set of random screen position
 
-        visual.setPosition(sf::Vector2f(randx, randy));
-        hitBox.setPosition(sf::Vector2f(randx, randy));
-        velocity = { sf::Vector2f(0.f, 0.f) };
-        health = 150;
-        
-
-        launchTime = launchClock.getElapsedTime().asSeconds() + Random::get(2, 30);
-    }
+        // gist of what its gonna do is really set up the metor to be launched so
+        // based on given speed calcs its velcoity which its direction will be based on its position off screen 
+        // so that it is show out in a direction so that will appear on the main screen.
+        // ////////////
+        // sets future velcoity for when shot out, its random postion off screen, the direciton it should shoot so it
+        // appears on screen, the time it will shout out in the next 30 seconds
 
     sf::ConvexShape getHitBox() { return hitBox; } // maybe need
     sf::FloatRect getGlobalPos() { return hitBox.getGlobalBounds(); }
@@ -53,20 +47,24 @@ public:
 
 private:
 
+    void respawn();
+
+private:
+
     sf::Sprite visual; 
 
-
-    sf::ConvexShape hitBox; // use this for collsions and phyrics and what not
+    // collisions
+    sf::ConvexShape hitBox; 
     int health{ 150 };
     int damage{ 100 }; 
 
-    // launch time
-
-    static inline sf::Clock launchClock;
+    // launch timing 
+    static inline sf::Clock launchClock; // shared clock
     sf::Vector2f launchVelocity{ 300, 0 }; // set for etsing for now
     float launchTime;
 
     // current physics
+    float speed{ 300.f }; // for now
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     float mass{ 4000.f };
