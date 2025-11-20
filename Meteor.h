@@ -64,7 +64,8 @@ private:
     float launchTime;
 
     // current physics
-    float speed{ 300.f }; // for now
+    float maxSpeed{ 400.f }; // for now
+    float minSpeed{ 20.f };
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     float mass{ 4000.f };
