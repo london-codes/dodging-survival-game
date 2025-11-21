@@ -71,7 +71,7 @@ private:
     sf::ConvexShape hitBox;
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
-    float mass{ 1001 };
+    float mass{ 1801 };
     float speed{ 300.f };
     int maxHealth{ 1000 };
     int currHealth{ 1000 };
