@@ -12,7 +12,7 @@
 
 int main()
 {
-
+    // Initiating objects
     auto window = sf::RenderWindow(sf::VideoMode({ 1600u, 900u }), "Spcae dodger");
     window.setFramerateLimit(240);
 
@@ -31,11 +31,9 @@ int main()
     Physics physics;
 
     sf::Clock clock;
-
-
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
     while (window.isOpen())
     {
-
         // time mechanics
         float dt = clock.restart().asSeconds();
 
@@ -44,17 +42,15 @@ int main()
             if (event->is<sf::Event::Closed>())
             {
                 window.close();
-            }
-                
-            if (event->is<sf::Event::KeyPressed>() &&
+            } 
+            if (event->is<sf::Event::KeyPressed>() and
                 event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Escape)
             {
                 paused = !paused;          
             }
-
         }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-        // pausing ending game  
+        // pausing/ending game  
         if (player.getHealth() <= 0) // close window if player has no health
         {
             window.close();
@@ -71,20 +67,11 @@ int main()
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // inputs
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
-        {
-            player.forwardPropulsion(dt);
-        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W)) { player.forwardPropulsion(dt); }
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A))
-        {
-            player.rotateRight(dt);
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D))
-        {
-            player.rotateLeft(dt);
-        }
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::A)) { player.rotateRight(dt); }
+        
+        if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::D)) { player.rotateLeft(dt); }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // updates

@@ -4,8 +4,6 @@
 PlayerShip::PlayerShip()
     : visual(TEXTURES.playerShip), exhaustVisual(TEXTURES.playerShip) // sf::Sprite has no default constructor so it needs to be initializer list with dummy texture
 {
-    // For Both the HitBox and Visual I think the origin of rotaiton might need to be adjusted so that it matches how it moves better.
-
     // HitBox
     hitBox.setPointCount(8);
     hitBox.setPoint(0, sf::Vector2f{ -7, -20 });
@@ -29,27 +27,13 @@ PlayerShip::PlayerShip()
 
 }
 
-///// Code for making rotation affected by physics and acceleration //////
-/*
-void PlayerShip::rotateRight(float dt) {
-    if (rotationVelocity.asDegrees() > -maxRotationVelocity.asDegrees())
-        rotationVelocity -= rotationRate * dt;
-}
-
-void PlayerShip::rotateLeft(float dt) {
-    if (rotationVelocity.asDegrees() < maxRotationVelocity.asDegrees())
-        rotationVelocity += rotationRate * dt;
-}
-*/
-
-
-
 // based of input from w key the thrust is added to the velocity of the ship
 void PlayerShip::forwardPropulsion(float dt)
 {
+    constexpr float DEG_TO_RAD = 3.14159265f / 180.f;
     // increasing the velocity in whatever dirction based on w key being pressed.
-    float xDirection = std::cos((hitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
-    float yDirection = std::sin((hitBox.getRotation().asDegrees() - 90) * 3.14159265f / 180.f);
+    float xDirection = std::cos((hitBox.getRotation().asDegrees() - 90) * DEG_TO_RAD);
+    float yDirection = std::sin((hitBox.getRotation().asDegrees() - 90) * DEG_TO_RAD);
     acceleration = { speed * dt * xDirection, speed * dt * yDirection };
     velocity = (velocity + acceleration);
 
@@ -57,48 +41,7 @@ void PlayerShip::forwardPropulsion(float dt)
     exhaustDuration += dt;
 }
 
-// input is the the other object its colliding with mass and velocity
-//CURENTTLY NOTE USING MIGHT GET RID OF
-void PlayerShip::collision(float otherMass, sf::Vector2f otherVelocity)
-{
-    /*
-    // new velocity direciton
-        velocity = velocity * -1.f;
-
-    // moves the ship 1 in x and y direction that your new oppositive velocity is so that it doesn't get stuck
-    // although I don't think this will really work when the ship doesn't necesarrily full change direction right
-    // So i think I should do more of a check to see if hit boxes are still colliding after velocity change with like
-    // a > check and then set positoin after that
-    // I think im going to need to assing mass to objects so that I based on there mass/weight they are affected more or less by
-    // objects the hit. IE intertia
-    // could even add fiction constant to help kind of introduced likea drag type thing that slows down total velcoity of all things
-    sf::Vector2f newpos = hitBox.getPosition() + sf::Vector2f(
-        velocity.x / abs(velocity.x), //velocity.x / abs(velocity.x) gets the purely the direction that object is now in.
-        velocity.y / abs(velocity.y)
-    );
-    
-    
-    */
-    velocity.x = ((mass - otherMass) / (mass + otherMass)) * velocity.x
-        + ((2 * otherMass) / (mass + otherMass)) * otherVelocity.x;
-    velocity.y = ((mass - otherMass) / (mass + otherMass)) * velocity.y
-        + ((2 * otherMass) / (mass + otherMass)) * otherVelocity.y;
-
-    /*
-    
-
-    // Step 2: set positions
-    hitBox.setPosition(newpos);
-    visual.setPosition(newpos);
-    exhaustVisual.setPosition(newpos);
-
-    
-    */
-}
-
-
-
-// simply updates Everything about the ship to get ready for rendering
+// updates everything about the ship to get ready for rendering
 void PlayerShip::update(float dt)
 {
     // updating position of ship
@@ -106,7 +49,7 @@ void PlayerShip::update(float dt)
     visual.move(velocity * dt);
     exhaustVisual.move(velocity * dt);
 
-    // don't let out of game window
+    // Keep ship within the bounds of 1600x900 screen
     sf::Vector2f pos = visual.getPosition();
     if (pos.x < 0){
         hitBox.setPosition({ 0.f, pos.y });
@@ -137,7 +80,7 @@ void PlayerShip::update(float dt)
     // rocekt exhaust animation.
     if (exhaustDuration > 0)
     {
-        if (exhaustDuration < 0.07f)
+        if (exhaustDuration < 0.07f) // time the first animation lasts etc
             exhaustVisual.setTexture(TEXTURES.exhaustAnimation[0]);
         else if (exhaustDuration < 0.15f)
             exhaustVisual.setTexture(TEXTURES.exhaustAnimation[1]);
@@ -158,10 +101,8 @@ void PlayerShip::update(float dt)
     thrustActived = false;
 }
 
-// draws the ship and its exhaust
 void PlayerShip::draw(sf::RenderWindow& window)
 {
-    // by the way draw the hit box at some point to make sure it matches texture use transparency
     window.draw(visual);
 
     if (exhaustDuration > 0)
@@ -169,3 +110,16 @@ void PlayerShip::draw(sf::RenderWindow& window)
         window.draw(exhaustVisual);
     }
 }
+
+///// Code for making rotation affected by physics and acceleration //////// didn't like this it made it to slow.
+/*
+void PlayerShip::rotateRight(float dt) {
+    if (rotationVelocity.asDegrees() > -maxRotationVelocity.asDegrees())
+        rotationVelocity -= rotationRate * dt;
+}
+
+void PlayerShip::rotateLeft(float dt) {
+    if (rotationVelocity.asDegrees() < maxRotationVelocity.asDegrees())
+        rotationVelocity += rotationRate * dt;
+}
+*/

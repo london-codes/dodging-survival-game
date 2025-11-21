@@ -10,7 +10,6 @@ class PlayerShip
 public:
     PlayerShip();
 
-
     void rotateRight(float dt) { visual.rotate(-rotationRate * dt);
         hitBox.rotate(-rotationRate * dt);
         exhaustVisual.rotate(-rotationRate * dt); }
@@ -21,13 +20,10 @@ public:
         exhaustVisual.rotate(rotationRate * dt);
     }
 
-
-    // based of input from w key the thrust is added to the velocity of the ship
+    // w key to move forward increasing velocity in the direction ship is pointed
     void forwardPropulsion(float dt);
 
-    void collision(float, sf::Vector2f);
-
-    // simply updates Everything about the ship to get ready for rendering
+    // updates everything about the ship to get ready for rendering
     void update(float dt);
 
     // draws the ship and its exhaust
@@ -35,10 +31,6 @@ public:
 
     void takeDamage(int amount) {
         health -= amount;
-    }
-
-    void gameOver() {
-        //end game here somehow
     }
 
     sf::ConvexShape getHitBox() { return hitBox; }
@@ -54,14 +46,14 @@ public:
     void setHealth(int newHealth) { health = newHealth; };
 private:
 
-    sf::Sprite visual; // use for visual and animating stuff. Also use for shadows potentially
-
-
+    // visuals
+    sf::Sprite visual; 
     sf::Sprite exhaustVisual; // for visual animation of thruster
     bool thrustActived = false;
     float exhaustDuration{ 0 };
 
-    sf::ConvexShape hitBox; // use this for collsions and phyrics and what not
+    // collisions / physics
+    sf::ConvexShape hitBox;
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
     float mass{ 1001 };

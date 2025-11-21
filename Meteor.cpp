@@ -29,25 +29,15 @@ Meteor::Meteor(float size)// size with default value and I think thats it
 
 }
 
-//CURENTTLY NOTE USING MIGHT GET RID OF
-void Meteor::collision(float otherMass, sf::Vector2f otherVelocity)
-{
-    //velocity = velocity * -1.f;
-
-    velocity.x = ((mass - otherMass) / (mass + otherMass)) * velocity.x
-        + ((2 * otherMass) / (mass + otherMass)) * otherVelocity.x;
-    velocity.y = ((mass - otherMass) / (mass + otherMass)) * velocity.y
-        + ((2 * otherMass) / (mass + otherMass)) * otherVelocity.y;
-
-}
-
 void Meteor::update(float dt)
 {
-    if (launchTime <= launchClock.getElapsedTime().asSeconds() and (inPlay == false)) // if its time more meteor to be shot out
+    // if its time shoot out meteor
+    if (launchTime <= launchClock.getElapsedTime().asSeconds() and (inPlay == false))
     {
         inPlay = true;
         velocity = launchVelocity;
     }
+
     // check to see if out of bounds and reset it if it is.    
     sf::Vector2f pos = visual.getPosition();
     if (pos.x < -220 or pos.x > 1820 or pos.y > 1120 or pos.y < -220)
@@ -67,9 +57,9 @@ void Meteor::draw(sf::RenderWindow& window)
 
 
 // respawn helper.
-// How this funciton works is it randomly choose side to put the metor on as well as a random position to put that based on the side.
-// then it based on the position it targets the two corners of the screen opposite from it. So if the meteor is placed on the left side
-// then it targets the top-right and top-left of screen. Then it gets a random angle between those two corners and shoots out the.
+// How this funciton works is it randomly choose a side to put the metor on as well as a random position to put it based on the side.
+// then based on the position it targets the two corners of the screen opposite from it. So if the meteor is placed on the left side
+// then it targets the top-right and bottom-right of screen. Then it gets a random angle between those two corners and shoots out the.
 // metoer in that direction.
 std::pair<sf::Vector2f, float> SpawnInfo(float screenWidth, float screenHeight)
 {
@@ -80,8 +70,6 @@ std::pair<sf::Vector2f, float> SpawnInfo(float screenWidth, float screenHeight)
     float angle;
     float bottomAngle;
     float topAngle;
-    // add conatnat proprotional to size to set the metors some distance away from the play screen border
-
 
     ////////////////////////////// I think i can use atan2 and think about just cetner make the position start zero zero then claculting the
     // angles af it the position of the metoer is 0,0 and getting the resolution of the screen from assuming 0,0 meteor is the cetner
@@ -131,10 +119,7 @@ std::pair<sf::Vector2f, float> SpawnInfo(float screenWidth, float screenHeight)
         pos = { 0.f, 0.f };
         angle = 0;
     }
-
     return { pos, angle };
-
-
 }
 
 
@@ -143,16 +128,13 @@ void Meteor::respawn()
 {
     inPlay = false;
     constexpr float DEG_TO_RAD = 3.14159265f / 180.f;
-    // for now just fix screen to be 1600 x 900
-    float screenWidth{ 1600.f };
+    float screenWidth{ 1600.f };// for now just fix screen to be 1600 x 900
     float screenHeight{ 900.f };
 
+    // sets a new random position on outer screen and angle to shoot out at based on the two opposite sides of the screen
     auto [pos, angle] = SpawnInfo(screenWidth, screenHeight);
     visual.setPosition(pos);
     hitBox.setPosition(pos);
-
-    //
-    std::cout << angle << std::endl;
     float xDirection = std::cos(angle * DEG_TO_RAD);
     float yDirection = std::sin(angle * DEG_TO_RAD);
     float speed= Random::get(minSpeed, maxSpeed);
@@ -161,11 +143,5 @@ void Meteor::respawn()
     velocity = { sf::Vector2f(0.f, 0.f) }; // set velocity to zero and wait for launch time
     currHealth = maxHealth; // reset health
 
-    launchTime = launchClock.getElapsedTime().asSeconds() + Random::get(2, 10); // amount of seconds from now it will be shot out
-
-
-    // set launch time probably set like global speed for all rocks and then divy that speed up for the x and y
-//veleocities. maybe just get a random number thats a likea fraction or acutually made genreate a random angle
-// between where you want it to shoot off then clac the sin cos of its x y velcoties
-
+    launchTime = launchClock.getElapsedTime().asSeconds() + Random::get(2, 30); // amount of seconds from current time it will be shot out
 }

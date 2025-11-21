@@ -9,7 +9,6 @@ class Physics
 public:
 	Physics();
 
-
     // templates need to go in header file for a class unless other wise intiated explictly
     template <typename T, typename V>
     void collision(T& object1, V& object2)

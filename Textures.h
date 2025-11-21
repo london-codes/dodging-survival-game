@@ -2,6 +2,7 @@
 #include <SFML/Graphics.hpp>
 #include <iostream>
 
+// used so that all Textures are loaded once in the beginning and any sprite can use any texture
 struct Textures
 {
 public:
