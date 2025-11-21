@@ -30,6 +30,14 @@ public:
     int getDamage() { return damage; }
     bool getInPlay() { return inPlay; }
 
+    void moveAll(sf::Vector2f amountMove) {
+        hitBox.move(amountMove);
+        visual.move(amountMove);
+    }
+    void setAllPositions(float x, float y) { // sets all sprites and hitboxes to necssary positions
+        hitBox.setPosition({ x, y });
+        visual.setPosition({ x, y });
+    }
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
     void setHealth(int newHealth) { currHealth = newHealth; }
 

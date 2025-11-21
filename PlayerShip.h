@@ -44,6 +44,18 @@ public:
     int getDamage() { return damage; }
     bool getInPlay() { return inPlay; }
 
+    void moveAll(sf::Vector2f amountMove){
+        hitBox.move(amountMove);
+        visual.move(amountMove);
+        healthBar.move(amountMove);
+        exhaustVisual.move(amountMove);
+    }
+    void setAllPositions(float x, float y) { // sets all sprites and hitboxes to necssary positions
+        hitBox.setPosition({ x, y });
+        visual.setPosition({ x, y });
+        exhaustVisual.setPosition({ x, y });
+        healthBar.setPosition({ visual.getPosition().x - 26.f, visual.getPosition().y + 30.f }); // different since its origin is not set correctly
+    }
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
     void setHealth(int newHealth) { currHealth = newHealth; };
 private:

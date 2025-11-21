@@ -23,10 +23,10 @@ int main()
     PlayerShip player;
 
     std::vector<Meteor> meteors;
-    meteors.reserve(42);
-    for (int i = 0; i < 30; ++i) meteors.emplace_back(); // small
-    for (int i = 0; i < 10; ++i) meteors.emplace_back(2); // medium
-    for (int i = 0; i < 2; ++i)  meteors.emplace_back(4); // large
+    meteors.reserve(80);
+    for (int i = 0; i < 50; ++i) meteors.emplace_back(); // small
+    for (int i = 0; i < 20; ++i) meteors.emplace_back(2); // medium
+    for (int i = 0; i < 10; ++i)  meteors.emplace_back(4); // large
 
     Physics physics;
 

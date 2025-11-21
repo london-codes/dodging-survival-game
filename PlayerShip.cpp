@@ -49,36 +49,30 @@ void PlayerShip::forwardPropulsion(float dt)
 void PlayerShip::update(float dt)
 {
     // updating position of ship
-    hitBox.move(velocity * dt);
-    visual.move(velocity * dt);
-    healthBar.move(velocity * dt);
-    exhaustVisual.move(velocity * dt);
+    moveAll(velocity * dt);
 
-    // Keep ship within the bounds of 1600x900 screen
+    // health bar
+    float healthPercent = currHealth / maxHealth;
+    healthBar.setSize({ 50.f * healthPercent, 10.f });
+
+    // Keep ship within the bounds of 1600x900 screen by adjusting veclocity and position
     sf::Vector2f pos = visual.getPosition();
     if (pos.x < 0){
-        hitBox.setPosition({ 0.f, pos.y });
-        visual.setPosition({ 0.f, pos.y });
-        exhaustVisual.setPosition({ 0.f, pos.y });
+        setAllPositions(0.f, pos.y);
         velocity = { 0, velocity.y };
     }
     if (pos.x > 1600){
-        hitBox.setPosition({ 1600.f, pos.y });
-        visual.setPosition({ 1600.f, pos.y });
-        exhaustVisual.setPosition({ 1600.f, pos.y });
+        setAllPositions(1600.f, pos.y);
         velocity = { 0, velocity.y };
 
     }
     if (pos.y > 900) {
-        hitBox.setPosition({ pos.x, 900.f });
-        visual.setPosition({ pos.x, 900.f });
-        exhaustVisual.setPosition({ pos.x, 900.f });
+        setAllPositions(pos.x, 900.f);
         velocity = { velocity.x, 0 };
     }
     if (pos.y < 0) {
-        hitBox.setPosition({ pos.x, 0.f });
-        visual.setPosition({ pos.x, 0.f });
-        exhaustVisual.setPosition({ pos.x, 0.f });
+        setAllPositions(pos.x, 0.f);
+
         velocity = { velocity.x, 0 };
     }
 
@@ -104,10 +98,6 @@ void PlayerShip::update(float dt)
             exhaustDuration = 0.f;
     }
     thrustActived = false;
-
-    //health bar
-    float healthPercent = currHealth / maxHealth;
-    healthBar.setSize({ 50.f * healthPercent, 10.f });
 }
 
 void PlayerShip::draw(sf::RenderWindow& window)

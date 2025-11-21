@@ -44,9 +44,7 @@ void Meteor::update(float dt)
         respawn();
 
     // move meteor based on velocity
-    hitBox.move(velocity * dt);
-    visual.move(velocity * dt);
-
+    moveAll(velocity * dt);
 }
 
 
@@ -65,6 +63,7 @@ std::pair<sf::Vector2f, float> SpawnInfo(float screenWidth, float screenHeight)
 {
     // could switch to radians but degrees is more intuitive. Also easier to use with the randon number generator.
     constexpr float RAD_TO_DEG = 180.f / 3.14159265f;
+    float amountOffScreen{ 200 };
     int side = Random::get(0, 3); // 0=top, 1=right, 2=bottom, 3=left
     sf::Vector2f pos;
     float angle;
@@ -75,45 +74,31 @@ std::pair<sf::Vector2f, float> SpawnInfo(float screenWidth, float screenHeight)
     // angles af it the position of the metoer is 0,0 and getting the resolution of the screen from assuming 0,0 meteor is the cetner
     switch (side) {
     case 0: // top
-        pos = { Random::get(0.f, screenWidth), 0.f };
+        pos = { Random::get(0.f, screenWidth), 0.f - amountOffScreen };
         topAngle = std::atan((screenWidth - pos.x) / screenHeight) * RAD_TO_DEG + 270.f;
         bottomAngle = -std::atan(pos.x / screenHeight) * RAD_TO_DEG + 270.f;
         angle = Random::get(bottomAngle, topAngle);
-
-        std::cout << topAngle << std::endl;
-        std::cout << bottomAngle << std::endl;
-
         break;
     case 1: // right
 
-        pos = { screenWidth, Random::get(0.f, screenHeight) };
+        pos = { screenWidth + amountOffScreen, Random::get(0.f, screenHeight) };
         topAngle = -std::atan(pos.y / screenWidth) * RAD_TO_DEG + 180.f;
         bottomAngle = std::atan((screenHeight - pos.y) / screenWidth) * RAD_TO_DEG + 180.f;
         angle = Random::get(topAngle, bottomAngle);
-
-        std::cout << topAngle << std::endl;
-        std::cout << bottomAngle << std::endl;
-
         break;
     case 2: // bottom
 
-        pos = { Random::get(0.f, screenWidth), screenHeight };
+        pos = { Random::get(0.f, screenWidth), screenHeight + amountOffScreen };
         topAngle = std::atan(pos.x / screenHeight) * RAD_TO_DEG + 90.f;
         bottomAngle = -std::atan((screenWidth - pos.x) / screenHeight) * RAD_TO_DEG + 90.f;
         angle = Random::get(bottomAngle, topAngle);
-
-        std::cout << topAngle << std::endl;
-        std::cout << bottomAngle << std::endl;
         break;
     case 3: // left
 
-        pos = { 0.f, Random::get(0.f, screenHeight) };
+        pos = { 0.f - amountOffScreen, Random::get(0.f, screenHeight) };
         topAngle = std::atan(pos.y / screenWidth) * RAD_TO_DEG;
         bottomAngle = -std::atan((screenHeight - pos.y) / screenWidth) * RAD_TO_DEG;
         angle = Random::get(bottomAngle, topAngle);
-
-        std::cout << topAngle << std::endl;
-        std::cout << bottomAngle << std::endl;
         break;
     default:
         pos = { 0.f, 0.f };
@@ -143,5 +128,6 @@ void Meteor::respawn()
     velocity = { sf::Vector2f(0.f, 0.f) }; // set velocity to zero and wait for launch time
     currHealth = maxHealth; // reset health
 
-    launchTime = launchClock.getElapsedTime().asSeconds() + Random::get(2, 30); // amount of seconds from current time it will be shot out
+    launchTime = launchClock.getElapsedTime().asSeconds() + Random::get(2, 30
+    ); // amount of seconds from current time it will be shot out
 }

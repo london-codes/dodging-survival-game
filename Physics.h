@@ -15,6 +15,7 @@ public:
     {
         if (!object1.getInPlay() or !object2.getInPlay()) // both need to be in play (true) othewise stop here
             return;
+
         // intial velocites
         sf::Vector2f v1 = object1.getVelocity();
         sf::Vector2f v2 = object2.getVelocity();
@@ -35,6 +36,12 @@ public:
 
         object1.setVelocity(newV1);
         object2.setVelocity(newV2);
+
+        // to help prevent multiple hits in one collision or stop two objects from getting stuck move both objecst after collsion by two pixels in the
+        // new there new velocities direction
+        object1.moveAll({ newV1.x / abs(newV1.x + .001f) * 2, newV1.y / abs(newV1.y + .001f) * 2 }); // +.001f to prevent dividing by zero 
+        object2.moveAll({ newV2.x / abs(newV2.x + .001f) * 2, newV2.y / abs(newV2.y + .001f) * 2 });
+        // could be better way but for now use this
 
         // calculate new healths
         object1.takeDamage(object2.getDamage());
