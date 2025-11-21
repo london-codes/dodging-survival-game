@@ -96,6 +96,8 @@ void PlayerShip::collision(float otherMass, sf::Vector2f otherVelocity)
     */
 }
 
+
+
 // simply updates Everything about the ship to get ready for rendering
 void PlayerShip::update(float dt)
 {
@@ -103,6 +105,34 @@ void PlayerShip::update(float dt)
     hitBox.move(velocity * dt);
     visual.move(velocity * dt);
     exhaustVisual.move(velocity * dt);
+
+    // don't let out of game window
+    sf::Vector2f pos = visual.getPosition();
+    if (pos.x < 0){
+        hitBox.setPosition({ 0.f, pos.y });
+        visual.setPosition({ 0.f, pos.y });
+        exhaustVisual.setPosition({ 0.f, pos.y });
+        velocity = { 0, velocity.y };
+    }
+    if (pos.x > 1600){
+        hitBox.setPosition({ 1600.f, pos.y });
+        visual.setPosition({ 1600.f, pos.y });
+        exhaustVisual.setPosition({ 1600.f, pos.y });
+        velocity = { 0, velocity.y };
+
+    }
+    if (pos.y > 900) {
+        hitBox.setPosition({ pos.x, 900.f });
+        visual.setPosition({ pos.x, 900.f });
+        exhaustVisual.setPosition({ pos.x, 900.f });
+        velocity = { velocity.x, 0 };
+    }
+    if (pos.y < 0) {
+        hitBox.setPosition({ pos.x, 0.f });
+        visual.setPosition({ pos.x, 0.f });
+        exhaustVisual.setPosition({ pos.x, 0.f });
+        velocity = { velocity.x, 0 };
+    }
 
     // rocekt exhaust animation.
     if (exhaustDuration > 0)
