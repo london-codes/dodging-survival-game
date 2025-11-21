@@ -10,10 +10,12 @@ class PlayerShip
 public:
     PlayerShip();
 
-    void rotateRight(float dt) { visual.rotate(-rotationRate * dt);
+    void rotateRight(float dt) {
+        visual.rotate(-rotationRate * dt);
         hitBox.rotate(-rotationRate * dt);
-        exhaustVisual.rotate(-rotationRate * dt); }
-    
+        exhaustVisual.rotate(-rotationRate * dt);
+    }
+
     void rotateLeft(float dt) {
         visual.rotate(rotationRate * dt);
         hitBox.rotate(rotationRate * dt);
@@ -30,7 +32,7 @@ public:
     void draw(sf::RenderWindow& window);
 
     void takeDamage(int amount) {
-        health -= amount;
+        currHealth -= amount;
     }
 
     sf::ConvexShape getHitBox() { return hitBox; }
@@ -38,19 +40,20 @@ public:
     sf::Vector2f getVelocity() { return velocity; }
     float getMass() { return mass; }
 
-    int getHealth() { return health; }
+    int getHealth() { return currHealth; }
     int getDamage() { return damage; }
     bool getInPlay() { return inPlay; }
 
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
-    void setHealth(int newHealth) { health = newHealth; };
+    void setHealth(int newHealth) { currHealth = newHealth; };
 private:
 
     // visuals
-    sf::Sprite visual; 
+    sf::Sprite visual;
     sf::Sprite exhaustVisual; // for visual animation of thruster
     bool thrustActived = false;
     float exhaustDuration{ 0 };
+    sf::RectangleShape healthBar{ { 50.f, 10.f } };
 
     // collisions / physics
     sf::ConvexShape hitBox;
@@ -58,7 +61,8 @@ private:
     sf::Vector2f acceleration;
     float mass{ 1001 };
     float speed{ 300.f };
-    int health{ 1000 };
+    float maxHealth{ 1000 };
+    float currHealth{ 1000 };
     int damage{ 50 };
     bool inPlay{ true };
 

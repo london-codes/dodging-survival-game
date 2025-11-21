@@ -21,6 +21,10 @@ PlayerShip::PlayerShip()
     visual.setOrigin({ visual.getLocalBounds().size.x / 2, visual.getLocalBounds().size.y / 2 });
     visual.setPosition({ 800.f,450.f });
 
+    // health Bar
+    healthBar.setFillColor(sf::Color::Green);
+    healthBar.setPosition({ visual.getPosition().x - 26.f, visual.getPosition().y + 30.f }); // just setting health bar correctly under ship
+
     // exhaust visuals
     exhaustVisual.setOrigin({ visual.getLocalBounds().size.x / 2, -visual.getLocalBounds().size.y / 2 });
     exhaustVisual.setPosition({ 800.f,450.f });// set origin 48 units above your ships origing because thats the height of ship
@@ -47,6 +51,7 @@ void PlayerShip::update(float dt)
     // updating position of ship
     hitBox.move(velocity * dt);
     visual.move(velocity * dt);
+    healthBar.move(velocity * dt);
     exhaustVisual.move(velocity * dt);
 
     // Keep ship within the bounds of 1600x900 screen
@@ -99,16 +104,17 @@ void PlayerShip::update(float dt)
             exhaustDuration = 0.f;
     }
     thrustActived = false;
+
+    //health bar
+    float healthPercent = currHealth / maxHealth;
+    healthBar.setSize({ 50.f * healthPercent, 10.f });
 }
 
 void PlayerShip::draw(sf::RenderWindow& window)
 {
     window.draw(visual);
-
-    if (exhaustDuration > 0)
-    {
-        window.draw(exhaustVisual);
-    }
+    window.draw(healthBar);
+    if (exhaustDuration > 0) { window.draw(exhaustVisual); }
 }
 
 ///// Code for making rotation affected by physics and acceleration //////// didn't like this it made it to slow.
