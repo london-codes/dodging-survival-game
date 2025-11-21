@@ -14,6 +14,8 @@ public:
     template <typename T, typename V>
     void collision(T& object1, V& object2)
     {
+        if (!object1.getInPlay() or !object2.getInPlay()) // both need to be in play (true) othewise stop here
+            return;
         // intial velocites
         sf::Vector2f v1 = object1.getVelocity();
         sf::Vector2f v2 = object2.getVelocity();

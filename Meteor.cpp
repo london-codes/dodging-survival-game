@@ -17,6 +17,8 @@ Meteor::Meteor()// size with default value and I think thats it
     visual.setOrigin({ visual.getLocalBounds().size.x / 2, visual.getLocalBounds().size.y / 2 });
     visual.setPosition({ 100.f,450.f });
 
+    visual.scale({1,1});
+
     // launch mechanics
     respawn();
 
@@ -36,13 +38,17 @@ void Meteor::collision(float otherMass, sf::Vector2f otherVelocity)
 
 void Meteor::update(float dt)
 {
-    if (launchTime <= launchClock.getElapsedTime().asSeconds())
+    if (launchTime <= launchClock.getElapsedTime().asSeconds() and (inPlay == false)) // if its time more meteor to be shot out
     {
+        inPlay = true;
         velocity = launchVelocity;
-        launchTime = 100.f;
     }
-        
+    // check to see if out of bounds and reset it if it is.    
+    sf::Vector2f pos = visual.getPosition();
+    if (pos.x < -220 or pos.x > 1820 or pos.y > 1120 or pos.y < -220)
+        respawn();
 
+    // move meteor based on velocity
     hitBox.move(velocity * dt);
     visual.move(velocity * dt);
 
@@ -60,7 +66,7 @@ void Meteor::draw(sf::RenderWindow& window)
 // then it based on the position it targets the two corners of the screen opposite from it. So if the meteor is placed on the left side
 // then it targets the top-right and top-left of screen. Then it gets a random angle between those two corners and shoots out the.
 // metoer in that direction.
-std::pair<sf::Vector2f, float> SpawnInfo(int screenWidth, int screenHeight)
+std::pair<sf::Vector2f, float> SpawnInfo(float screenWidth, float screenHeight)
 {
     // could switch to radians but degrees is more intuitive. Also easier to use with the randon number generator.
     constexpr float RAD_TO_DEG = 180.f / 3.14159265f;
@@ -69,13 +75,17 @@ std::pair<sf::Vector2f, float> SpawnInfo(int screenWidth, int screenHeight)
     float angle;
     float bottomAngle;
     float topAngle;
+    // add conatnat proprotional to size to set the metors some distance away from the play screen border
 
+
+    ////////////////////////////// I think i can use atan2 and think about just cetner make the position start zero zero then claculting the
+    // angles af it the position of the metoer is 0,0 and getting the resolution of the screen from assuming 0,0 meteor is the cetner
     switch (side) {
     case 0: // top
-        pos = { static_cast<float>(Random::get(0, screenWidth)), 0.f };
+        pos = { Random::get(0.f, screenWidth), 0.f };
+        topAngle = std::atan((screenWidth - pos.x) / screenHeight) * RAD_TO_DEG + 270.f;
         bottomAngle = -std::atan(pos.x / screenHeight) * RAD_TO_DEG + 270.f;
-        topAngle = std::atan((screenWidth - pos.x) / screenHeight) * RAD_TO_DEG + 270.f; // this works
-        angle = static_cast<float>(Random::get(static_cast<int>(bottomAngle), static_cast<int>(topAngle)));
+        angle = Random::get(bottomAngle, topAngle);
 
         std::cout << topAngle << std::endl;
         std::cout << bottomAngle << std::endl;
@@ -83,11 +93,10 @@ std::pair<sf::Vector2f, float> SpawnInfo(int screenWidth, int screenHeight)
         break;
     case 1: // right
 
-        pos = { static_cast<float>(screenWidth),  static_cast<float>(Random::get(0, screenHeight))};
-        // essentially changing the angle we are looking at to be 180 degrees and then calculating how much up and down from that angle we can go
-        topAngle = -std::atan(pos.y / screenWidth) * RAD_TO_DEG +  180.f;
-        bottomAngle = (std::atan((screenHeight - pos.y) / screenWidth) * RAD_TO_DEG) + 180.f;
-        angle = static_cast<float>(Random::get(static_cast<int>(topAngle), static_cast<int>(bottomAngle)));
+        pos = { screenWidth, Random::get(0.f, screenHeight) };
+        topAngle = -std::atan(pos.y / screenWidth) * RAD_TO_DEG + 180.f;
+        bottomAngle = std::atan((screenHeight - pos.y) / screenWidth) * RAD_TO_DEG + 180.f;
+        angle = Random::get(topAngle, bottomAngle);
 
         std::cout << topAngle << std::endl;
         std::cout << bottomAngle << std::endl;
@@ -95,21 +104,20 @@ std::pair<sf::Vector2f, float> SpawnInfo(int screenWidth, int screenHeight)
         break;
     case 2: // bottom
 
-        pos = { static_cast<float>(Random::get(0, screenWidth)), static_cast<float>(screenHeight) };
-        // essentially calculate the angle you would shoot out at zero degrees if the the two targets are 900,1600 then rotate it 90 degrees
+        pos = { Random::get(0.f, screenWidth), screenHeight };
         topAngle = std::atan(pos.x / screenHeight) * RAD_TO_DEG + 90.f;
-        bottomAngle = -std::atan((screenWidth - pos.x) / screenHeight) * RAD_TO_DEG + 90.f; // this works
-        angle = static_cast<float>(Random::get(static_cast<int>(bottomAngle), static_cast<int>(topAngle)));
+        bottomAngle = -std::atan((screenWidth - pos.x) / screenHeight) * RAD_TO_DEG + 90.f;
+        angle = Random::get(bottomAngle, topAngle);
 
         std::cout << topAngle << std::endl;
         std::cout << bottomAngle << std::endl;
         break;
     case 3: // left
 
-        pos = { 0.f, static_cast<float>(Random::get(0, screenHeight)) };
+        pos = { 0.f, Random::get(0.f, screenHeight) };
         topAngle = std::atan(pos.y / screenWidth) * RAD_TO_DEG;
-        bottomAngle = -std::atan((screenHeight - pos.y) / screenWidth) * RAD_TO_DEG; // this works
-        angle = static_cast<float>(Random::get(static_cast<int>(bottomAngle), static_cast<int>(topAngle)));
+        bottomAngle = -std::atan((screenHeight - pos.y) / screenWidth) * RAD_TO_DEG;
+        angle = Random::get(bottomAngle, topAngle);
 
         std::cout << topAngle << std::endl;
         std::cout << bottomAngle << std::endl;
@@ -120,13 +128,17 @@ std::pair<sf::Vector2f, float> SpawnInfo(int screenWidth, int screenHeight)
     }
 
     return { pos, angle };
+
+
 }
 
 
 // setting up meteor intitally, when out of bounds, or when is destryoed
 void Meteor::respawn()
 {
+    inPlay = false;
     constexpr float DEG_TO_RAD = 3.14159265f / 180.f;
+    // for now just fix screen to be 1600 x 900
     float screenWidth{ 1600.f };
     float screenHeight{ 900.f };
 

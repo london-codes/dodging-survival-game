@@ -18,21 +18,16 @@ int main()
 
     TEXTURES.load();
 
-
     bool paused{ false };
-
 
     PlayerShip player;
 
-    Meteor meteor;
-
-    //std::array<Meteor, 30> Meteors;
+    std::array<Meteor, 30> Meteors;
     //for (int i{0}; i < 30; ++i)
     //{
-        // Meteor meteor;
-        //Meteors[i] = Meteor();
+    //    Meteor meteor;
+    //    Meteors[i] = Meteor();
     //}
-
 
     Physics physics;
 
@@ -45,7 +40,7 @@ int main()
         // time mechanics
         float dt = clock.restart().asSeconds();
 
-        while (const std::optional event = window.pollEvent())
+        while (const std::optional event = window.pollEvent()) // window interation
         {
             if (event->is<sf::Event::Closed>())
             {
@@ -55,15 +50,13 @@ int main()
             if (event->is<sf::Event::KeyPressed>() &&
                 event->getIf<sf::Event::KeyPressed>()->code == sf::Keyboard::Key::Escape)
             {
-                paused = !paused;
-                // Do something once when Escape is pressed
-                // For example: pause the game or open a menu
-                    
+                paused = !paused;          
             }
 
         }
-        // close window if player has no health
-        if (player.getHealth() <= 0)
+///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // pausing ending game  
+        if (player.getHealth() <= 0) // close window if player has no health
         {
             window.close();
             break;
@@ -73,11 +66,10 @@ int main()
         {
             window.clear(sf::Color(0, 0, 0));
             player.draw(window);
-            meteor.draw(window);
             window.display();
             continue;
         }
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // inputs
 
         if (sf::Keyboard::isKeyPressed(sf::Keyboard::Key::W))
@@ -95,27 +87,65 @@ int main()
             player.rotateLeft(dt);
         }
 
-
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // updates
+
         player.update(dt);
-        meteor.update(dt);
 
-
-        // collisions
-        if (player.getGlobalPos().findIntersection(meteor.getGlobalPos()))
+        for (int i{ 0 }; i < 30; ++i) // meteors
         {
-            physics.collision(player, meteor);
+            Meteors[i].update(dt);
+        }
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+        // collisions
 
-            //meteor.collision(player.getMass(), player.getVelocity());
-            //player.collision(meteor.getMass(), meteor.getVelocity());
+        //player vs meteors
+        for (int i{ 0 }; i < 30; ++i)
+        {
+            if (player.getGlobalPos().findIntersection(Meteors[i].getGlobalPos()))
+            {
+                physics.collision(player, Meteors[i]);
+            }
         }
 
-
+        // meteors vs meteors
+        for (int i{ 0 }; i < 30; ++i)
+        {
+            for (int k{ i + 1 }; k < 30; ++k)
+            {
+                if (Meteors[i].getGlobalPos().findIntersection(Meteors[k].getGlobalPos()))
+                {
+                    physics.collision(Meteors[i], Meteors[k]);
+                }
+            }
+        }
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // render
         window.clear(sf::Color(25, 25, 112));
         player.draw(window);
-        meteor.draw(window);
+
+        for (int i{0}; i < 30; ++i) // meteors
+        {
+            Meteors[i].draw(window);
+        }
+
         window.display();
+
+
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+// fps counter to console
+        static int frames = 0;
+        static sf::Clock fpsClock;
+
+        frames++;
+
+        if (fpsClock.getElapsedTime().asSeconds() >= 1.0f)
+        {
+            std::cout << "FPS: " << frames << "\n";
+            frames = 0;
+            fpsClock.restart();
+        }
+
     }
 }
 

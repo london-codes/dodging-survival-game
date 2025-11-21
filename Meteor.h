@@ -41,6 +41,7 @@ public:
 
     int getHealth() { return health; }
     int getDamage() { return damage; }
+    bool getInPlay() { return inPlay; }
 
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
     void setHealth(int newHealth) { health = newHealth; }
@@ -54,7 +55,8 @@ private:
     sf::Sprite visual; 
 
     // collisions
-    sf::ConvexShape hitBox; 
+    sf::ConvexShape hitBox;
+    bool inPlay{false};
     int health{ 150 };
     int damage{ 100 }; 
 
@@ -68,7 +70,7 @@ private:
     float minSpeed{ 20.f };
     sf::Vector2f velocity;
     sf::Vector2f acceleration;
-    float mass{ 4000.f };
+    float mass{ 1000.f };
 
 };
 

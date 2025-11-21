@@ -48,6 +48,7 @@ public:
 
     int getHealth() { return health; }
     int getDamage() { return damage; }
+    bool getInPlay() { return inPlay; }
 
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
     void setHealth(int newHealth) { health = newHealth; };
@@ -67,6 +68,7 @@ private:
     float speed{ 300.f };
     int health{ 1000 };
     int damage{ 50 };
+    bool inPlay{ true };
 
 
     sf::Angle rotationRate{ sf::degrees(270.f) };
