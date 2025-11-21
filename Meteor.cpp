@@ -2,8 +2,8 @@
 #include "Textures.h"
 
 
-Meteor::Meteor()// size with default value and I think thats it
-    : visual(TEXTURES.meteor)
+Meteor::Meteor(float size)// size with default value and I think thats it
+    :size_m(size), visual(TEXTURES.meteor)
 {
     // hit box
     hitBox.setPointCount(4);
@@ -13,11 +13,16 @@ Meteor::Meteor()// size with default value and I think thats it
     hitBox.setPoint(3, sf::Vector2f{ -7, 7 });
     hitBox.setPosition({ 100.f,450.f });
 
+
     // visual
     visual.setOrigin({ visual.getLocalBounds().size.x / 2, visual.getLocalBounds().size.y / 2 });
     visual.setPosition({ 100.f,450.f });
 
-    visual.scale({1,1});
+    // scaling
+    visual.scale({ size_m, size_m });
+    hitBox.scale({ size_m, size_m });
+    mass = mass * size_m;
+    maxHealth = maxHealth * static_cast<int>(size_m);
 
     // launch mechanics
     respawn();
@@ -154,7 +159,7 @@ void Meteor::respawn()
     launchVelocity = { speed * xDirection, speed * -yDirection };
 
     velocity = { sf::Vector2f(0.f, 0.f) }; // set velocity to zero and wait for launch time
-    health = 150; // reset health
+    currHealth = maxHealth; // reset health
 
     launchTime = launchClock.getElapsedTime().asSeconds() + Random::get(2, 10); // amount of seconds from now it will be shot out
 

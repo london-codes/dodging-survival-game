@@ -22,12 +22,11 @@ int main()
 
     PlayerShip player;
 
-    std::array<Meteor, 30> Meteors;
-    //for (int i{0}; i < 30; ++i)
-    //{
-    //    Meteor meteor;
-    //    Meteors[i] = Meteor();
-    //}
+    std::vector<Meteor> meteors;
+    meteors.reserve(42);
+    for (int i = 0; i < 30; ++i) meteors.emplace_back(); // small
+    for (int i = 0; i < 10; ++i) meteors.emplace_back(2); // medium
+    for (int i = 0; i < 2; ++i)  meteors.emplace_back(4); // large
 
     Physics physics;
 
@@ -92,30 +91,30 @@ int main()
 
         player.update(dt);
 
-        for (int i{ 0 }; i < 30; ++i) // meteors
+        for (std::size_t i{ 0 }; i < meteors.size(); ++i) // meteors
         {
-            Meteors[i].update(dt);
+            meteors[i].update(dt);
         }
 ////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // collisions
 
         //player vs meteors
-        for (int i{ 0 }; i < 30; ++i)
+        for (int i{ 0 }; i < meteors.size(); ++i)
         {
-            if (player.getGlobalPos().findIntersection(Meteors[i].getGlobalPos()))
+            if (player.getGlobalPos().findIntersection(meteors[i].getGlobalPos()))
             {
-                physics.collision(player, Meteors[i]);
+                physics.collision(player, meteors[i]);
             }
         }
 
         // meteors vs meteors
-        for (int i{ 0 }; i < 30; ++i)
+        for (std::size_t i{ 0 }; i < meteors.size(); ++i)
         {
-            for (int k{ i + 1 }; k < 30; ++k)
+            for (std::size_t k{ i + 1 }; k < meteors.size(); ++k)
             {
-                if (Meteors[i].getGlobalPos().findIntersection(Meteors[k].getGlobalPos()))
+                if (meteors[i].getGlobalPos().findIntersection(meteors[k].getGlobalPos()))
                 {
-                    physics.collision(Meteors[i], Meteors[k]);
+                    physics.collision(meteors[i], meteors[k]);
                 }
             }
         }
@@ -124,9 +123,9 @@ int main()
         window.clear(sf::Color(25, 25, 112));
         player.draw(window);
 
-        for (int i{0}; i < 30; ++i) // meteors
+        for (std::size_t i{0}; i < meteors.size(); ++i) // meteors
         {
-            Meteors[i].draw(window);
+            meteors[i].draw(window);
         }
 
         window.display();

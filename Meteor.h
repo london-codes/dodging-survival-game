@@ -11,7 +11,7 @@ class Meteor
 
 public:
 
-    Meteor();
+    Meteor(float size = 1);
 
     // some type of random type fucntion taht gets a random velcoity and position to set the vlecotiy of it do
 
@@ -22,8 +22,8 @@ public:
     void draw(sf::RenderWindow& window);
 
     void takeDamage(int amount) {
-        health -= amount;
-        if (health <= 0) respawn();
+        currHealth -= amount;
+        if (currHealth <= 0) respawn();
     }
     ///////////////////////////////////////////////////////// fix when random is enabled so set of random screen position
 
@@ -39,12 +39,12 @@ public:
     sf::Vector2f getVelocity() { return velocity; }
     float getMass() { return mass; }
 
-    int getHealth() { return health; }
+    int getHealth() { return currHealth; }
     int getDamage() { return damage; }
     bool getInPlay() { return inPlay; }
 
     void setVelocity(sf::Vector2f newVelocity) { velocity = newVelocity; }
-    void setHealth(int newHealth) { health = newHealth; }
+    void setHealth(int newHealth) { currHealth = newHealth; }
 
 private:
 
@@ -57,7 +57,9 @@ private:
     // collisions
     sf::ConvexShape hitBox;
     bool inPlay{false};
-    int health{ 150 };
+    float size_m;
+    int currHealth;
+    int maxHealth{ 201 };
     int damage{ 100 }; 
 
     // launch timing 
