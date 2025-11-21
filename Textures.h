@@ -6,11 +6,15 @@
 struct Textures
 {
 public:
+    sf::Texture backgroundtexture;
 	sf::Texture meteor;
     sf::Texture playerShip; // 48 by 48 pixels
     std::array<sf::Texture, 4> exhaustAnimation;
 
 void load() {
+    if (!backgroundtexture.loadFromFile("assets/spacebackground2.png"))
+        std::cout << "Failed to load spacebackground!\n";
+
     if (!meteor.loadFromFile("assets/meteor.png"))
         std::cout << "Failed to load meteor!\n";
 
@@ -25,7 +29,6 @@ void load() {
         std::cerr << "Failed to load assets/flame3.png\n";
     if (!exhaustAnimation[3].loadFromFile("assets/flame4.png"))
         std::cerr << "Failed to load assets/flame4.png\n";
-
 }
 };
 

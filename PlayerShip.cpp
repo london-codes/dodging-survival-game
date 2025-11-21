@@ -52,8 +52,8 @@ void PlayerShip::update(float dt)
     moveAll(velocity * dt);
 
     // health bar
-    float healthPercent = currHealth / maxHealth;
-    healthBar.setSize({ 50.f * healthPercent, 10.f });
+    float healthPercent = static_cast<float>(currHealth) / static_cast<float>(maxHealth);
+    healthBar.setSize({ 50 * healthPercent, 10 });
 
     // Keep ship within the bounds of 1600x900 screen by adjusting veclocity and position
     sf::Vector2f pos = visual.getPosition();

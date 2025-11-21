@@ -73,8 +73,8 @@ private:
     sf::Vector2f acceleration;
     float mass{ 1001 };
     float speed{ 300.f };
-    float maxHealth{ 1000 };
-    float currHealth{ 1000 };
+    int maxHealth{ 1000 };
+    int currHealth{ 1000 };
     int damage{ 50 };
     bool inPlay{ true };
 
